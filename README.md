@@ -37,27 +37,22 @@
 ### 使用方法
 
 1. 在 Ubuntu 24.04.4 LTS 服务器上下载配置脚本：
-   ```Shell
+   ```bash
    wget https://raw.githubusercontent.com/shuiqinghuan/qrTraceability/master/ubuntu_setup.sh
    ```
    <br />
-   1. 给脚本添加执行权限：
-      ```Shell
-      chmod +x ubuntu_setup.sh
-      ```
-   2. 运行脚本：
-      ```Shell
-      ./ubuntu_setup.sh
-      ```
-   3. 脚本执行完成后，服务会自动启动，可通过显示的地址访问前端和后端
-   ### 更新服务器 IP 地址
-   如果需要更新服务器 IP 地址，可使用：
-
-   Bash
-
-   运行
-2. 更新服务器 IP 地址
-   ```Shell
+2. 给脚本添加执行权限：
+    ```bash
+    chmod +x ubuntu_setup.sh
+    ```
+3. 运行脚本：
+    ```bash
+    ./ubuntu_setup.sh
+    ```
+4. 脚本执行完成后，服务会自动启动，可通过显示的地址访问前端和后端
+### 更新服务器 IP 地址
+如果需要更新服务器 IP 地址，可使用：
+   ```bash
    sudo /opt/qrTraceability/update_server_ip.sh <新IP地址>
    ```
 
