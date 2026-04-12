@@ -15,7 +15,7 @@
 
 ## 技术栈
 
-- **前端**：React 19.2.4 + Vite 8.0.4 + React Router DOM 7.14.0
+- **前端**：Vue.js 3 + Vite 5.0.0 + Vue Router 4.2.0
 - **后端**：Go 1.25.1 + Gin 1.9.1 + PostgreSQL + JWT
 - **数据库**：PostgreSQL 14.x 或更高版本
 - **其他**：QR码生成、Nginx反向代理、Systemd服务管理
@@ -30,26 +30,7 @@
 - Nginx
 - Systemd
 
-<br />
 
-## 自动安装步骤
-
-### 使用方法
-
-1. 在 Ubuntu 24.04.4 LTS 服务器上下载配置脚本：
-   ```bash
-   wget https://raw.githubusercontent.com/shuiqinghuan/qrTraceability/master/ubuntu_setup.sh
-   ```
-   <br />
-2. 给脚本添加执行权限：
-    ```bash
-    chmod +x ubuntu_setup.sh
-    ```
-3. 运行脚本：
-    ```bash
-    ./ubuntu_setup.sh
-    ```
-4. 脚本执行完成后，服务会自动启动，可通过显示的地址访问前端和后端
 ### 更新服务器 IP 地址
 如果需要更新服务器 IP 地址，可使用：
    ```bash
