@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: qruser
+      POSTGRES_PASSWORD: qrpassword
+      POSTGRES_DB: qrtraceability
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./server/internal/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: qruser
+      DB_PASSWORD: qrpassword
+      DB_NAME: qrtraceability
+      JWT_SECRET: your_jwt_secret
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
