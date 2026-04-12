@@ -10,17 +10,19 @@ sudo apt update && sudo apt upgrade -y
 echo "\n2. 安装必要的依赖包..."
 sudo apt install -y git curl wget unzip build-essential nginx
 
-echo "\n3. 安装 Node.js 18.x..."
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+echo "\n3. 安装 Go (使用 apt 包管理器)..."
+sudo apt install -y golang-go
+
+echo "\n4. 安装 Node.js 20.x (使用 apt 包管理器)..."
+sudo apt install -y ca-certificates curl gnupg
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+NODE_MAJOR=20
+echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+sudo apt update
 sudo apt install -y nodejs
 
-echo "\n4. 安装 Go 1.25.1..."
-wget https://go.dev/dl/go1.25.1.linux-amd64.tar.gz
-sudo tar -C /usr/local -xzf go1.25.1.linux-amd64.tar.gz
-echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
-source ~/.bashrc
-
-echo "\n5. 安装 PostgreSQL..."
+echo "\n5. 安装 PostgreSQL (使用 apt 包管理器)..."
 sudo apt install -y postgresql postgresql-contrib
 
 # 启动 PostgreSQL 服务
@@ -46,7 +48,22 @@ npm run build
 
 echo "\n10. 编译后端项目..."
 cd ../server
-go build -o server cmd/main.go
+
+# 优化 Go 依赖管理
+go mod tidy  # 清理和更新依赖
+go mod verify  # 验证依赖完整性
+
+# 优化编译参数（静态编译，减少依赖）
+go build -ldflags="-s -w" -o server cmd/main.go
+
+# 检查编译结果
+if [ -f "server" ]; then
+    echo "后端编译成功"
+    chmod +x server
+else
+    echo "后端编译失败"
+    exit 1
+fi
 
 echo "\n11. 配置环境变量..."
 echo "DB_HOST=localhost\nDB_PORT=5432\nDB_USER=qruser\nDB_PASSWORD=qrpassword\nDB_NAME=qrtraceability\nJWT_SECRET=your_jwt_secret\nSERVER_PORT=8080" > .env
@@ -108,6 +125,30 @@ sudo ufw allow 8080/tcp
 sudo ufw allow 5432/tcp
 sudo ufw --force enable
 
+# 创建 IP 地址替换脚本（钩子）
+echo '#!/bin/bash
+
+# 服务器 IP 地址替换脚本
+SERVER_IP=$1
+
+if [ -z "$SERVER_IP" ]; then
+    echo "请提供服务器 IP 地址"
+    echo "用法: $0 <服务器IP地址>"
+    exit 1
+fi
+
+# 替换 Nginx 配置中的 server_name
+sudo sed -i "s/server_name .*/server_name $SERVER_IP;/" /etc/nginx/sites-available/qrtraceability
+
+# 重启 Nginx
+sudo systemctl restart nginx
+
+echo "服务器 IP 地址已更新为: $SERVER_IP"
+echo "Nginx 已重启"
+' > /opt/qrTraceability/update_server_ip.sh
+
+chmod +x /opt/qrTraceability/update_server_ip.sh
+
 echo "\n=== 配置完成！==="
 echo "\n服务访问地址："
 echo "前端：http://$(hostname -I | awk '{print $1}')"
@@ -118,4 +159,6 @@ echo "sudo systemctl status nginx"
 echo "\n查看服务日志："
 echo "sudo journalctl -u qrbackend"
 echo "sudo journalctl -u nginx"
+echo "\n更新服务器 IP 地址："
+echo "sudo /opt/qrTraceability/update_server_ip.sh <新IP地址>"
 echo "\n=== 配置脚本执行完成 ==="

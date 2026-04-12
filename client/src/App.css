@@ -514,3 +514,26 @@ body {
     width: 100%;
   }
 }
+
+/* Password strength indicators */
+.password-strength {
+  font-size: 0.875rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.25rem;
+}
+
+.password-weak {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.password-medium {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+.password-strong {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 
 const Auth = ({ onAuthSuccess }) => {
@@ -10,6 +10,8 @@ const Auth = ({ onAuthSuccess }) => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState('');
+  const [passwordStrengthClass, setPasswordStrengthClass] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,11 +19,86 @@ const Auth = ({ onAuthSuccess }) => {
       ...prev,
       [name]: value,
     }));
+
+    // 密码强度检查
+    if (name === 'password' && value) {
+      checkPasswordStrength(value);
+    }
+  };
+
+  const checkPasswordStrength = (password) => {
+    let strength = 0;
+    let strengthText = '';
+    let strengthClass = '';
+
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+    switch (strength) {
+      case 0:
+      case 1:
+        strengthText = 'Weak';
+        strengthClass = 'password-weak';
+        break;
+      case 2:
+      case 3:
+        strengthText = 'Medium';
+        strengthClass = 'password-medium';
+        break;
+      case 4:
+      case 5:
+        strengthText = 'Strong';
+        strengthClass = 'password-strong';
+        break;
+      default:
+        strengthText = '';
+        strengthClass = '';
+    }
+
+    setPasswordStrength(strengthText);
+    setPasswordStrengthClass(strengthClass);
+  };
+
+  const validateForm = () => {
+    if (!formData.phone_number) {
+      setError('Please enter your phone number');
+      return false;
+    }
+
+    if (!/^1[3-9]\d{9}$/.test(formData.phone_number)) {
+      setError('Please enter a valid phone number');
+      return false;
+    }
+
+    if (!formData.password) {
+      setError('Please enter your password');
+      return false;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return false;
+    }
+
+    if (!isLogin && !formData.role) {
+      setError('Please select a role');
+      return false;
+    }
+
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -38,9 +115,12 @@ const Auth = ({ onAuthSuccess }) => {
         onAuthSuccess(response.user);
       } else if (response.error) {
         setError(response.error);
+      } else {
+        setError('An unexpected error occurred');
       }
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      console.error('Auth error:', err);
+      setError('Failed to connect to server. Please check your network.');
     } finally {
       setLoading(false);
     }
@@ -60,6 +140,7 @@ const Auth = ({ onAuthSuccess }) => {
             value={formData.phone_number}
             onChange={handleChange}
             required
+            placeholder="Enter your phone number"
           />
         </div>
         <div className="form-group">
@@ -72,7 +153,13 @@ const Auth = ({ onAuthSuccess }) => {
             onChange={handleChange}
             required
             minLength={6}
+            placeholder="Enter your password"
           />
+          {!isLogin && formData.password && (
+            <div className={`password-strength ${passwordStrengthClass}`}>
+              Password strength: {passwordStrength}
+            </div>
+          )}
         </div>
         {!isLogin && (
           <div className="form-group">
@@ -84,10 +171,10 @@ const Auth = ({ onAuthSuccess }) => {
               onChange={handleChange}
               required
             >
-              <option value="serverseed">Server Seed</option>
-              <option value="servergrow">Server Grow</option>
-              <option value="servermanager">Server Manager</option>
-              <option value="clentcustomer">Client Customer</option>
+              <option value="serverseed">Server Seed (种子管理)</option>
+              <option value="servergrow">Server Grow (生长管理)</option>
+              <option value="servermanager">Server Manager (品质管理)</option>
+              <option value="clentcustomer">Client Customer (客户)</option>
             </select>
           </div>
         )}
