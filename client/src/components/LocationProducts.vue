@@ -161,8 +161,9 @@ const prevPage = () => {
       query: {
         ...route.query,
         page: currentPage.value - 1
-      })
-    }
+      }
+    })
+  }
 }
 
 const nextPage = () => {
@@ -171,8 +172,9 @@ const nextPage = () => {
       query: {
         ...route.query,
         page: currentPage.value + 1
-      })
-    }
+      }
+    })
+  }
 }
 
 const handleImageError = (event) => {

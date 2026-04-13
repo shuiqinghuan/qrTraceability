@@ -505,6 +505,8 @@ const handleImageError = (event) => {
   height: 200px;
   object-fit: cover;
   display: block;
+}
+
 .media-caption {
   padding: 12px;
   background: #f5f5f5;

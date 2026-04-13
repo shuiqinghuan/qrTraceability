@@ -153,6 +153,22 @@ export const tagAPI = {
   deletePlantingTag: (plantingId, tagId) => api.delete(`/planting/${plantingId}/tags/${tagId}`)
 }
 
+// 媒体管理相关
+export const mediaAPI = {
+  // 获取产品媒体列表
+  list: (productId) => api.get(`/products/${productId}/media`),
+  
+  // 上传媒体
+  upload: (formData) => api.post('/admin/media/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }),
+  
+  // 删除媒体
+  delete: (mediaId) => api.delete(`/growth/${mediaId}`)
+}
+
 // 管理员相关
 export const adminAPI = {
   // 管理员登录
