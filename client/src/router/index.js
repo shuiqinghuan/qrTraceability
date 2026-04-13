@@ -100,7 +100,8 @@ router.beforeEach((to, from, next) => {
     '/register',
     '/products/:id',
     '/locations/:location/products',
-    '/admin/login'
+    '/admin/login',
+    '/dashboard/products'
   ]
   
   // 检查是否是公开路由
