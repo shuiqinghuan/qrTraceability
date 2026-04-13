@@ -55,5 +55,8 @@ sudo systemctl status nginx --no-pager
 echo "服务启动完成！"
 echo "前端地址: http://$(hostname -I | awk '{print $1}')"
 echo "后端API地址: http://$(hostname -I | awk '{print $1}'):8080"
+echo "后台管理地址: http://$(hostname -I | awk '{print $1}')/admin/login"
+echo "默认账号: lhseed"
+echo "默认密码: 123456"
 
 echo "=== 启动脚本执行完成 ==="
