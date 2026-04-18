@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import { config } from './config.js'
 
 // 产品数据
 const productData = ref(null)
@@ -36,12 +37,11 @@ const fetchProductData = async () => {
   }
 
   try {
-    // 注意：在实际生产环境中，应该从配置中获取API地址
-    const response = await axios.get(`http://139.155.97.74:8000/api/batches/unique/${productId}`)
+    const response = await axios.get(`${config.apiBaseUrl}/api/batches/unique/${productId}`)
     productData.value = response.data
     
     // 获取交互统计数据
-    const statsResponse = await axios.get(`http://139.155.97.74:8000/api/interactions/batch/${productData.value.id}`)
+    const statsResponse = await axios.get(`${config.apiBaseUrl}/api/interactions/batch/${productData.value.id}`)
     interactionStats.value = statsResponse.data
     
     loading.value = false
@@ -57,7 +57,7 @@ const handleLike = async () => {
   if (!productData.value) return
   
   try {
-    await axios.post('http://139.155.97.74:8000/api/interactions', {
+    await axios.post(`${config.apiBaseUrl}/api/interactions`, {
       batch_id: productData.value.id,
       action_type: 'like'
     })
@@ -75,7 +75,7 @@ const handleShare = async () => {
   if (!productData.value) return
   
   try {
-    await axios.post('http://139.155.97.74:8000/api/interactions', {
+    await axios.post(`${config.apiBaseUrl}/api/interactions`, {
       batch_id: productData.value.id,
       action_type: 'share'
     })
@@ -106,7 +106,7 @@ const handleCollect = async () => {
   if (!productData.value) return
   
   try {
-    await axios.post('http://139.155.97.74:8000/api/interactions', {
+    await axios.post(`${config.apiBaseUrl}/api/interactions`, {
       batch_id: productData.value.id,
       action_type: 'collect'
     })
