@@ -39,8 +39,8 @@
 
 1. 克隆项目
 ```bash
-git clone <repository-url>
-cd <project-directory>
+git clone https://github.com/shuiqinghuan/qrTraceability
+cd qrTraceability
 ```
 
 2. 启动服务
@@ -50,8 +50,12 @@ docker-compose up -d
 
 3. 访问应用
 
-- 前端：http://localhost:3000
-- 后端API：http://localhost:8000
+- 本地开发：
+  - 前端：http://localhost:3000
+  - 后端API：http://localhost:8000
+- 云服务器部署：
+  - 前端：http://139.155.97.74:3000
+  - 后端API：http://139.155.97.74:8000
 
 ### 停止服务
 
