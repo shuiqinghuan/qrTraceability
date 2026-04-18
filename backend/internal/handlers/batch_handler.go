@@ -131,7 +131,7 @@ func (h *BatchHandler) DeleteBatch(c *gin.Context) {
 
 // AddMedia 添加媒体文件
 func (h *BatchHandler) AddMedia(c *gin.Context) {
-	batchID, err := strconv.ParseUint(c.Param("batch_id"), 10, 32)
+	batchID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid batch ID"})
 		return
@@ -153,7 +153,7 @@ func (h *BatchHandler) AddMedia(c *gin.Context) {
 
 // UpdateHarvestQuality 更新采收质量
 func (h *BatchHandler) UpdateHarvestQuality(c *gin.Context) {
-	batchID, err := strconv.ParseUint(c.Param("batch_id"), 10, 32)
+	batchID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid batch ID"})
 		return
@@ -175,7 +175,7 @@ func (h *BatchHandler) UpdateHarvestQuality(c *gin.Context) {
 
 // GenerateQRCode 为批次生成二维码
 func (h *BatchHandler) GenerateQRCode(c *gin.Context) {
-	batchID, err := strconv.ParseUint(c.Param("batch_id"), 10, 32)
+	batchID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid batch ID"})
 		return
