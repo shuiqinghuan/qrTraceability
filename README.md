@@ -1,323 +1,239 @@
 # 农产品二维码追溯系统
 
-## 项目介绍
+这是一个完整的农产品全生命周期追溯系统，通过二维码技术实现农产品从种植到销售的全程可追溯。
 
-农产品二维码追溯系统是一个基于Vue.js和Go的全栈应用，用于追踪和管理农产品从种子到成品的整个生命周期。系统通过二维码技术，实现了农产品信息的快速查询和追溯，提高了农产品的透明度和可信度。
+## 系统特点
 
-### 主要功能
-
-- **种子信息管理**：记录和管理种子的基本信息，包括品种编码
-- **播种定植管理**：追踪种植过程和时间节点，支持定植地点标签
-- **生长媒体管理**：上传和管理生长过程中的图片和视频
-- **产品品质管理**：记录和分析产品的品质指标，包括采收时间、糖度、重量、口感描述、适应人群和品质小结
-- **用户交互功能**：收藏和点赞功能，支持IP-based限制防止刷点赞
-- **跳转功能**：支持链接到同定植地点的其他产品
-- **后台管理系统**：完整的GUI管理界面，支持产品、媒体和品质信息的管理
-- **二维码生成**：为每个种植批次生成唯一的二维码
+- **产品信息管理**：完整的产品基本信息、批次管理和媒体文件展示
+- **采收质量追踪**：记录采收时间、糖度、重量等质量指标
+- **用户交互反馈**：支持点赞、分享、收藏功能
+- **安全保障**：Redis限流机制，防止恶意刷量
+- **容器化部署**：使用Docker和Docker Compose实现一键部署
 
 ## 技术栈
 
-- **前端**：Vue.js 3 + Vite 5.0.0 + Vue Router 4.2.0
-- **后端**：Go 1.25.1 + Gin 1.9.1 + PostgreSQL + JWT
-- **数据库**：PostgreSQL 14.x 或更高版本
-- **其他**：QR码生成、Nginx反向代理、Systemd服务管理
+### 后端
+- **Go 1.20** ：高性能服务端语言
+- **Gin** ：轻量级Web框架
+- **GORM** ：ORM库
+- **PostgreSQL** ：关系型数据库
+- **Redis** ：缓存和限流
 
-## 环境要求
+### 前端
+- **Vue 3** ：现代化前端框架
+- **Vant UI** ：移动端组件库
+- **Axios** ：HTTP客户端
+- **Vite** ：构建工具
 
-- Ubuntu 24.04.4 LTS
-- Go 1.25.1 或更高版本
-- Node.js 20.x 或更高版本
-- PostgreSQL 14.x 或更高版本
-- Git
-- Nginx
-- Systemd
+### 基础设施
+- **Docker** ：容器化
+- **Docker Compose** ：编排工具
 
+## 快速开始
 
-### 更新服务器 IP 地址
-如果需要更新服务器 IP 地址，可使用：
-   ```bash
-   sudo /opt/qrTraceability/update_server_ip.sh <新IP地址>
-   ```
+### 前置要求
 
-## 手动安装步骤
+- Docker 和 Docker Compose
 
-### 1. 服务器环境准备
+### 安装步骤
+
+1. 克隆项目
+```bash
+git clone <repository-url>
+cd <project-directory>
+```
+
+2. 启动服务
+```bash
+docker-compose up -d
+```
+
+3. 访问应用
+
+- 前端：http://localhost:3000
+- 后端API：http://localhost:8000
+
+### 停止服务
 
 ```bash
-# 更新系统包
-sudo apt update && sudo apt upgrade -y
-
-# 安装必要的依赖包
-sudo apt install -y git curl wget unzip build-essential nginx
-
-# 安装 Go (使用 apt 包管理器)
-sudo apt install -y golang-go
-
-# 安装 Node.js 20.x (使用 apt 包管理器)
-sudo apt install -y ca-certificates curl gnupg
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-NODE_MAJOR=20
-echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-sudo apt update
-sudo apt install -y nodejs
-
-# 安装 PostgreSQL (使用 apt 包管理器)
-sudo apt install -y postgresql postgresql-contrib
-
-# 配置防火墙
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-sudo ufw allow 8080/tcp
-sudo ufw allow 5432/tcp
-sudo ufw enable
+docker-compose down
 ```
 
-### 2. 数据库配置
+## 项目结构
 
-```bash
-# 启动 PostgreSQL 服务
-sudo systemctl start postgresql
-sudo systemctl enable postgresql
-
-# 创建数据库用户和数据库
-sudo -u postgres psql
-CREATE USER qruser WITH PASSWORD 'qrpassword';
-CREATE DATABASE qrtraceability OWNER qruser;
-\q
-
-# 执行数据库模式脚本
-psql -U qruser -d qrtraceability -f /opt/qrTraceability/server/internal/db/schema.sql
+```
+.
+├── backend/                 # 后端项目
+│   ├── cmd/
+│   │   └── api/            # API服务入口
+│   ├── internal/
+│   │   ├── config/         # 配置管理
+│   │   ├── handlers/       # API处理器
+│   │   ├── models/         # 数据模型
+│   │   ├── repository/     # 数据访问层
+│   │   ├── service/        # 业务逻辑层
+│   │   └── utils/          # 工具函数
+│   ├── Dockerfile
+│   ├── go.mod
+│   └── go.sum
+├── frontend/               # 前端项目
+│   ├── src/
+│   │   ├── App.vue        # 主应用组件
+│   │   ├── main.js        # 入口文件
+│   │   └── style.css      # 全局样式
+│   ├── Dockerfile
+│   ├── package.json
+│   └── vite.config.js
+├── docker-compose.yml      # Docker Compose配置
+└── README.md              # 项目文档
 ```
 
-### 3. 项目拉取和构建
+## 核心功能
 
-```bash
-# 从 GitHub 拉取项目代码
-sudo mkdir -p /opt/qrTraceability
-sudo chown $USER:$USER /opt/qrTraceability
-cd /opt/qrTraceability
-git clone https://github.com/shuiqinghuan/qrTraceability.git .
+### 1. 产品管理
+- 创建和编辑产品信息
+- 产品编码管理
+- 产品描述和属性
 
-# 构建前端项目
-cd client
-npm install
-npm run build
+### 2. 批次管理
+- 创建产品批次
+- 批次编号和唯一标识
+- 定植地点和时间记录
+- 媒体文件上传（图片、视频）
 
-# 编译后端项目
-cd ../server
+### 3. 采收质量
+- 采收时间范围记录
+- 糖度、重量等指标
+- 口感和适应人群描述
+- 品质小结
 
-# 优化 Go 依赖管理
-go mod tidy  # 清理和更新依赖
-go mod verify  # 验证依赖完整性
+### 4. 用户交互
+- 点赞功能
+- 分享功能（支持Web Share API）
+- 收藏功能
+- 实时统计更新
 
-# 优化编译参数（静态编译，减少依赖）
-go build -ldflags="-s -w" -o server cmd/main.go
+## API文档
 
-# 检查编译结果
-if [ -f "server" ]; then
-    echo "后端编译成功"
-    chmod +x server
-else
-    echo "后端编译失败"
-    exit 1
-fi
-```
+### 产品API
 
-### 4. 服务配置和启动
+| 方法 | 路径 | 描述 |
+|------|------|------|
+| POST | /api/products | 创建产品 |
+| GET | /api/products/:id | 获取产品详情 |
+| GET | /api/products | 获取产品列表 |
+| PUT | /api/products/:id | 更新产品 |
+| DELETE | /api/products/:id | 删除产品 |
 
-#### 4.1 配置环境变量
+### 批次API
 
-```bash
-# 在 server 目录下创建 .env 文件
-echo "DB_HOST=localhost\nDB_PORT=5432\nDB_USER=qruser\nDB_PASSWORD=qrpassword\nDB_NAME=qrtraceability\nJWT_SECRET=your_jwt_secret\nSERVER_PORT=8080" > .env
-```
+| 方法 | 路径 | 描述 |
+|------|------|------|
+| POST | /api/batches | 创建批次 |
+| GET | /api/batches/:id | 获取批次详情 |
+| GET | /api/batches/unique/:unique_id | 通过唯一标识获取批次 |
+| GET | /api/batches/product/:product_id | 获取产品的批次列表 |
+| PUT | /api/batches/:id | 更新批次 |
+| DELETE | /api/batches/:id | 删除批次 |
 
-#### 4.2 创建 Systemd 服务
+### 交互API
 
-```bash
-# 创建 systemd 服务文件
-sudo nano /etc/systemd/system/qrbackend.service
-```
+| 方法 | 路径 | 描述 |
+|------|------|------|
+| POST | /api/interactions | 记录用户交互 |
+| GET | /api/interactions/batch/:batch_id | 获取批次交互统计 |
 
-添加以下内容：
+## 数据模型
 
-```ini
-[Unit]
-Description=QR Traceability Backend Service
-After=network.target postgresql.service
-
-[Service]
-WorkingDirectory=/opt/qrTraceability/server
-EnvironmentFile=/opt/qrTraceability/server/.env
-ExecStart=/opt/qrTraceability/server/server
-Restart=always
-RestartSec=5
-User=ubuntu
-
-[Install]
-WantedBy=multi-user.target
-```
-
-#### 4.3 配置 Nginx 反向代理
-
-```bash
-# 创建 Nginx 配置文件
-sudo nano /etc/nginx/sites-available/qrtraceability
-```
-
-添加以下内容：
-
-```nginx
-server {
-    listen 80;
-    server_name example.com;
-
-    location /api/ {
-        proxy_pass http://localhost:8080;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    location / {
-        root /opt/qrTraceability/client/dist;
-        index index.html;
-        try_files $uri $uri/ /index.html;
-    }
+### Product（产品）
+```go
+type Product struct {
+    ID          uint   `gorm:"primaryKey"`
+    Code        string `gorm:"uniqueIndex;not null"`
+    Name        string `gorm:"not null"`
+    Description string
 }
 ```
 
-#### 4.4 启动服务
+### ProductBatch（产品批次）
+```go
+type ProductBatch struct {
+    ID               uint      `gorm:"primaryKey"`
+    ProductID        uint      `gorm:"not null"`
+    BatchNumber      string    `gorm:"not null"`
+    UniqueID         string    `gorm:"uniqueIndex;not null"`
+    PlantingLocation string
+    PlantingDate     time.Time
+}
+```
 
+### UserInteraction（用户交互）
+```go
+type UserInteraction struct {
+    ID         uint   `gorm:"primaryKey"`
+    BatchID    uint   `gorm:"not null"`
+    IP         string `gorm:"not null"`
+    ActionType string `gorm:"not null"` // like, share, collect
+}
+```
+
+## 开发说明
+
+### 后端开发
+
+1. 进入backend目录
 ```bash
-# 启动后端服务
-sudo systemctl daemon-reload
-sudo systemctl start qrbackend
-sudo systemctl enable qrbackend
-
-# 启动 Nginx 服务
-sudo ln -s /etc/nginx/sites-available/qrtraceability /etc/nginx/sites-enabled/
-sudo systemctl restart nginx
+cd backend
 ```
 
-## 服务管理
-
-### 查看服务状态
-
+2. 安装依赖
 ```bash
-# 查看后端服务状态
-sudo systemctl status qrbackend
-
-# 查看 Nginx 服务状态
-sudo systemctl status nginx
+go mod download
 ```
 
-### 重启服务
-
+3. 运行服务
 ```bash
-# 重启后端服务
-sudo systemctl restart qrbackend
-
-# 重启 Nginx 服务
-sudo systemctl restart nginx
+go run cmd/api/main.go
 ```
 
-### 查看服务日志
+### 前端开发
 
+1. 进入frontend目录
 ```bash
-# 查看后端服务日志
-sudo journalctl -u qrbackend
-
-# 查看 Nginx 服务日志
-sudo journalctl -u nginx
+cd frontend
 ```
 
-## 后台管理系统
-
-### 访问地址
-
-- 后台管理登录页面：`http://服务器IP/admin/login`
-- 后台管理仪表板：`http://服务器IP/admin`
-
-### 默认账号密码
-
-- **用户名**：lhseed
-- **密码**：123456
-
-### 功能模块
-
-- **产品管理**：添加、编辑、删除产品信息
-- **媒体管理**：上传和管理产品的图片和视频
-- **品质管理**：编辑产品的品质信息，包括采收时间、糖度、重量、口感描述、适应人群和品质小结
-
-## 故障排查
-
-### 1. 数据库连接问题
-
-- 检查 PostgreSQL 服务是否运行：`sudo systemctl status postgresql`
-- 检查数据库连接配置是否正确
-- 检查防火墙是否允许 5432 端口
-
-### 2. 后端服务启动失败
-
-- 查看服务日志：`sudo journalctl -u qrbackend`
-- 检查环境变量配置是否正确
-- 检查数据库连接是否正常
-
-### 3. 前端页面无法访问
-
-- 检查 Nginx 服务是否运行：`sudo systemctl status nginx`
-- 检查 Nginx 配置是否正确
-- 检查防火墙是否允许 80 端口
-- 检查前端构建是否成功
-
-### 4. API 接口无法访问
-
-- 检查后端服务是否运行：`sudo systemctl status qrbackend`
-- 检查防火墙是否允许 8080 端口
-- 检查 API 地址是否正确
-
-## 目录结构
-
-```
-qrTraceability/
-├── client/               # 前端代码
-│   ├── public/           # 静态资源
-│   ├── src/              # 源代码
-│   │   ├── assets/       # 图片、字体等
-│   │   ├── components/   # 组件
-│   │   ├── views/        # 页面视图
-│   │   ├── router/       # 路由配置
-│   │   ├── services/     # API 服务
-│   │   ├── store/        # 状态管理（可选）
-│   │   ├── App.vue       # 根组件
-│   │   └── main.js       # 入口文件
-│   ├── package.json      # 前端依赖
-│   └── vite.config.js    # Vite 配置
-├── server/               # 后端代码
-│   ├── cmd/              # 命令行入口
-│   │   └── main.go       # 主程序
-│   ├── internal/         # 内部包
-│   │   ├── api/          # API 接口
-│   │   ├── auth/         # 认证
-│   │   ├── db/           # 数据库
-│   │   ├── middleware/   # 中间件
-│   │   └── utils/        # 工具函数
-│   ├── go.mod            # Go 依赖
-│   └── server            # 编译后的可执行文件
-├── .env                  # 环境变量配置
-└── README.md             # 项目说明
+2. 安装依赖
+```bash
+npm install
 ```
 
-## 注意事项
+3. 启动开发服务器
+```bash
+npm run dev
+```
 
-1. 请根据实际服务器配置修改环境变量和配置文件
-2. 生产环境中请使用强密码和HTTPS
-3. 定期备份数据库和重要文件
-4. 保持系统和依赖包的更新
+4. 构建生产版本
+```bash
+npm run build
+```
+
+## 配置说明
+
+后端配置通过环境变量控制：
+
+- `SERVER_PORT`：服务端口，默认8000
+- `DB_HOST`：数据库主机，默认postgres
+- `DB_PORT`：数据库端口，默认5432
+- `DB_USER`：数据库用户，默认postgres
+- `DB_PASSWORD`：数据库密码，默认password
+- `DB_NAME`：数据库名称，默认qr_traceability
+- `DB_SSLMODE`：数据库SSL模式，默认disable
+- `REDIS_HOST`：Redis主机，默认redis
+- `REDIS_PORT`：Redis端口，默认6379
+- `REDIS_PASSWORD`：Redis密码，默认为空
+- `REDIS_DB`：Redis数据库，默认0
 
 ## 许可证
 
-本项目采用 MIT 许可证。
+MIT License
