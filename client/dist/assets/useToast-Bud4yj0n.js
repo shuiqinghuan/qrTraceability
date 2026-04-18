@@ -1,1 +1,0 @@
-import{r as a}from"./index-DlhC5IKi.js";function n(){const s=a({show:!1,message:"",type:"info",duration:3e3});return{toast:s,showToast:(e,t="info",o=3e3)=>{s.value={show:!0,message:e,type:t,duration:o},setTimeout(()=>{s.value.show=!1},o)},hideToast:()=>{s.value.show=!1}}}export{n as u};
