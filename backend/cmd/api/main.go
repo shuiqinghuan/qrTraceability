@@ -89,14 +89,14 @@ func main() {
 		batches := api.Group("/batches")
 		{
 			batches.POST("", batchHandler.CreateBatch)
-			batches.GET("/:id", batchHandler.GetBatchByID)
 			batches.GET("/unique/:unique_id", batchHandler.GetBatchByUniqueID)
 			batches.GET("/product/:product_id", batchHandler.ListBatchesByProductID)
-			batches.PUT("/:id", batchHandler.UpdateBatch)
-			batches.DELETE("/:id", batchHandler.DeleteBatch)
 			batches.POST("/:batch_id/media", batchHandler.AddMedia)
 			batches.POST("/:batch_id/harvest", batchHandler.UpdateHarvestQuality)
 			batches.GET("/:batch_id/qr", batchHandler.GenerateQRCode)
+			batches.GET("/:id", batchHandler.GetBatchByID)
+			batches.PUT("/:id", batchHandler.UpdateBatch)
+			batches.DELETE("/:id", batchHandler.DeleteBatch)
 		}
 
 		// Interaction routes
