@@ -1,0 +1,14 @@
+# Django核心
+Django>=4.2,<5.0
+djangorestframework>=3.14.0
+django-cors-headers>=4.3.0
+
+# 数据库
+# psycopg2-binary>=2.9.9  # PostgreSQL驱动（如需使用PostgreSQL）
+
+# 生产环境
+gunicorn>=21.2.0
+whitenoise>=6.6.0
+
+# 工具库
+python-decouple>=3.8
