@@ -191,42 +191,118 @@ graph TD
 - 骨架屏减少感知加载时间
 - 代码分割，按需加载
 
-## 8. 数据结构
+## 8. 技术架构
 
-### 8.1 产品信息模型
+### 8.1 后端技术栈
 
-```typescript
-interface Product {
-  id: string;
-  name: string;              // 品种名，如"枣甜5号"
-  code: string;               // 品种编码，如"4395"
-  plantingLocation: string;   // 定植地点
-  plantingDate: string;       // 定植时间（YYYY-MM-DD）
-  images: string[];           // 图片URL数组
-  video: string;              // 视频URL
-  harvest: HarvestInfo;       // 采收信息
-  qualitySummary: string;     // 品质小结
-  suitableFor: string[];      // 适应人群
-}
+| 技术 | 说明 |
+|------|------|
+| Django 4.2 | Python Web 框架 |
+| Django REST Framework | RESTful API 开发 |
+| SQLite | 数据库（轻量、易部署） |
+| SimpleJWT | JWT 认证 |
+| django-cors-headers | CORS 跨域支持 |
 
-interface HarvestInfo {
-  startDate: string;          // 采收起始时间
-  endDate: string;            // 采收终止时间
-  sugarContent: number;      // 糖度（Brix）
-  weight: number;            // 单果重量（克）
-  taste: string;              // 口感描述
-  quality: string;           // 品质等级
+### 8.2 前端技术栈
+
+| 技术 | 说明 |
+|------|------|
+| Vue 3 + TypeScript | 核心框架 |
+| Vite | 构建工具 |
+| Vue Router | 路由管理 |
+| Pinia | 状态管理 |
+| Axios | HTTP 请求 |
+| Element Plus | 管理端 UI 组件 |
+| UnoCSS | 展示端原子化 CSS |
+
+### 8.3 数据模型
+
+#### 8.3.1 产品模型 (Product)
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | int | 主键 |
+| name | string | 品种名称 |
+| code | string | 品种编码（如 4395） |
+| planting_location | string | 定植地点 |
+| planting_date | date | 定植时间 |
+| images | json | 产品图片URL数组 |
+| video | url | 视频链接 |
+| harvest_start_date | date | 采收起始时间 |
+| harvest_end_date | date | 采收终止时间 |
+| sugar_content | decimal | 糖度（Brix） |
+| weight | decimal | 单果重量（克） |
+| taste | string | 口感描述 |
+| quality | string | 品质等级 |
+| quality_summary | text | 品质小结 |
+| suitable_for | json | 适应人群数组 |
+| created_at | datetime | 创建时间 |
+| updated_at | datetime | 更新时间 |
+
+#### 8.3.2 媒体文件模型 (MediaFile)
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | int | 主键 |
+| product_id | int | 关联产品ID |
+| file | file | 文件对象 |
+| media_type | string | 媒体类型（image/video） |
+| filename | string | 文件名 |
+| file_size | int | 文件大小 |
+| uploaded_at | datetime | 上传时间 |
+
+## 9. API接口设计
+
+### 9.1 认证接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /api/v1/auth/login | 管理员登录 |
+| POST | /api/v1/auth/refresh | 刷新Token |
+| POST | /api/v1/auth/logout | 登出 |
+
+### 9.2 产品接口
+
+| 方法 | 路径 | 说明 | 认证 |
+|------|------|------|------|
+| GET | /api/v1/products | 获取产品列表 | 否 |
+| GET | /api/v1/products/:id | 获取产品详情 | 否 |
+| GET | /api/v1/products/public/code/:code | 通过编码获取(扫码用) | 否 |
+| POST | /api/v1/products | 创建产品 | 是 |
+| PUT | /api/v1/products/:id | 更新产品 | 是 |
+| DELETE | /api/v1/products/:id | 删除产品 | 是 |
+
+### 9.3 媒体接口
+
+| 方法 | 路径 | 说明 | 认证 |
+|------|------|------|------|
+| POST | /api/v1/media/upload | 上传媒体文件 | 是 |
+| DELETE | /api/v1/media/:id | 删除媒体 | 是 |
+
+## 10. 示例数据
+
+以「枣甜5号」为例：
+
+```json
+{
+  "id": 1,
+  "name": "枣甜5号",
+  "code": "4395",
+  "planting_location": "新疆和田洛浦县红枣基地",
+  "planting_date": "2019-03-15",
+  "images": [
+    "https://example.com/media/images/zao1.jpg",
+    "https://example.com/media/images/zao2.jpg",
+    "https://example.com/media/images/zao3.jpg"
+  ],
+  "video": "https://example.com/media/videos/zao_intro.mp4",
+  "harvest_start_date": "2023-09-20",
+  "harvest_end_date": "2023-10-15",
+  "sugar_content": 28.5,
+  "weight": 12.8,
+  "taste": "肉质紧密、甘甜爽口、核小肉厚",
+  "quality": "特级",
+  "quality_summary": "枣甜5号果实饱满，色泽红润，含糖量高，口感极佳。采用有机种植，无农药残留，是健康美味的优质干果。",
+  "suitable_for": ["一般人群", "糖尿病患者慎食", "儿童", "老年人"]
 }
 ```
-
-### 8.2 API端点
-
-| 方法 | 端点 | 说明 |
-|------|------|------|
-| GET | /api/products | 获取产品列表 |
-| GET | /api/products/:id | 获取单个产品详情 |
-| POST | /api/products | 创建产品 |
-| PUT | /api/products/:id | 更新产品 |
-| DELETE | /api/products/:id | 删除产品 |
-| POST | /api/upload/image | 上传图片 |
-| POST | /api/upload/video | 上传视频 |
