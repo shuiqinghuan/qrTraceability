@@ -11,6 +11,31 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
-    port: 5173
+    port: 5173,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      }
+    }
+  },
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    sourcemap: false,
+    minify: 'terser',
+    chunkSizeWarningLimit: 1500,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['vue', 'vue-router'],
+          utils: ['axios']
+        }
+      }
+    }
+  },
+  preview: {
+    host: '0.0.0.0',
+    port: 4173
   }
 })

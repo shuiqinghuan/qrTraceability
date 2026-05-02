@@ -1,66 +1,47 @@
-# ===== OS =====
-.DS_Store
-._*
-Thumbs.db
-Desktop.ini
-
-# ===== IDE/Editor =====
-.vscode/
-.idea/
-.project
-.classpath
-.settings/
-*.sublime-*
-
-# ===== Node.js/Frontend =====
-node_modules/
-.pnpm-store/
-.next/
-.nuxt/
-.vite/
-.cache/
-.eslintcache
-*.tsbuildinfo
-
-# ===== Python =====
+# Python
 __pycache__/
-*.pyc
-*.pyo
-.venv/
+*.py[cod]
+*$py.class
+*.so
+.Python
 venv/
-.pytest_cache/
-.mypy_cache/
-.ipynb_checkpoints/
-*.egg-info/
+ENV/
+env/
+.venv/
 
-# ===== Rust =====
-target/
-
-# ===== Java/JVM =====
-.gradle/
-*.class
-*.jar
-*.war
-*.ear
-
-# ===== Ruby =====
-.bundle/
-
-# ===== Logs/Temp =====
+# Django
 *.log
 logs/
-*.tmp
-*.temp
+db.sqlite3
+db.sqlite3-journal
+/media
+/staticfiles
+
+# 环境变量
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
 *.swp
 *.swo
 *~
 
-# ===== Test Coverage =====
-coverage/
-.nyc_output/
-htmlcov/
-.coverage
-*.lcov
+# Node
+node_modules/
+dist/
+dist-ssr/
+*.local
+package-lock.json
 
-# ===== Internal =====
-/.work/
+# System
+.DS_Store
+Thumbs.db
+
+# Build
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
