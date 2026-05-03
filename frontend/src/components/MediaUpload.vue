@@ -56,9 +56,15 @@
 </template>
 
 <script setup>
+/**
+ * 媒体文件上传组件
+ * 提供图片文件选择、上传进度反馈及已上传图片列表展示功能
+ */
+
 import { ref } from 'vue'
 import api from '@/api'
 
+// 表单状态：产品ID、标题、选中文件、上传状态、消息提示
 const productId = ref(1)
 const title = ref('')
 const selectedFile = ref(null)
@@ -68,6 +74,7 @@ const messageType = ref('success')
 const uploadedMedia = ref([])
 const fileInput = ref(null)
 
+/** 文件选择变更处理 */
 const handleFileChange = (event) => {
   const file = event.target.files[0]
   if (file) {
@@ -75,12 +82,14 @@ const handleFileChange = (event) => {
   }
 }
 
+/** 格式化文件大小为可读字符串（B/KB/MB） */
 const formatFileSize = (bytes) => {
   if (bytes < 1024) return bytes + ' B'
   if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB'
   return (bytes / (1024 * 1024)).toFixed(2) + ' MB'
 }
 
+/** 执行图片上传，提交FormData至后端API */
 const handleUpload = async () => {
   if (!selectedFile.value) return
 
@@ -103,6 +112,7 @@ const handleUpload = async () => {
     messageType.value = 'success'
     uploadedMedia.value.unshift(response.data)
 
+    // 上传成功后重置表单状态
     selectedFile.value = null
     if (fileInput.value) {
       fileInput.value.value = ''
@@ -118,6 +128,7 @@ const handleUpload = async () => {
 </script>
 
 <style scoped>
+/* 组件根容器 */
 .media-upload {
   max-width: 600px;
   margin: 0 auto;
@@ -136,6 +147,7 @@ h3 .icon {
   font-size: 22px;
 }
 
+/* 上传表单区域 */
 .upload-section {
   background: #f5f5f5;
   padding: 24px;
@@ -175,6 +187,7 @@ h3 .icon {
   cursor: pointer;
 }
 
+/* 已选文件信息提示 */
 .file-info {
   display: flex;
   align-items: center;
@@ -200,6 +213,7 @@ h3 .icon {
   margin-left: auto;
 }
 
+/* 上传按钮样式 */
 .upload-btn {
   width: 100%;
   padding: 12px;
@@ -227,6 +241,7 @@ h3 .icon {
   cursor: not-allowed;
 }
 
+/* 加载旋转动画 */
 .spinner {
   display: inline-block;
   animation: spin 1s linear infinite;
@@ -237,6 +252,7 @@ h3 .icon {
   to { transform: rotate(360deg); }
 }
 
+/* 上传结果消息提示（成功/失败） */
 .message {
   padding: 12px 16px;
   border-radius: 8px;
@@ -256,6 +272,7 @@ h3 .icon {
   border: 1px solid #ef9a9a;
 }
 
+/* 已上传图片列表区域 */
 .uploaded-list {
   margin-top: 20px;
 }

@@ -4,7 +4,7 @@
       <span class="icon">🌾</span>
       采收质量信息
     </h2>
-    
+
     <div class="quality-content">
       <div class="harvest-time">
         <div class="time-item">
@@ -82,6 +82,12 @@
 </template>
 
 <script setup>
+/**
+ * 采收质量信息展示组件
+ * 展示农产品的采收时间区间、质量指标（糖度、单果重量）及口感、适应人群等详情
+ */
+
+// 接收父组件传入的采收质量数据
 defineProps({
   harvest: {
     type: Object,
@@ -100,6 +106,7 @@ defineProps({
 </script>
 
 <style scoped>
+/* 组件根容器 */
 .harvest-quality {
   height: 100%;
 }
@@ -124,6 +131,7 @@ defineProps({
   gap: 20px;
 }
 
+/* 采收时间区间展示区域 */
 .harvest-time {
   display: flex;
   align-items: center;
@@ -164,6 +172,7 @@ defineProps({
   color: var(--primary-color);
 }
 
+/* 质量指标区域（进度条展示糖度和重量） */
 .quality-metrics {
   display: flex;
   flex-direction: column;
@@ -193,6 +202,7 @@ defineProps({
   color: var(--primary-color);
 }
 
+/* 进度条基础样式 */
 .progress-bar {
   height: 8px;
   background: var(--background-color);
@@ -214,6 +224,7 @@ defineProps({
   background: linear-gradient(90deg, var(--accent-color), #ffb74d);
 }
 
+/* 品质详情卡片区域（口感、适应人群、品质小结） */
 .quality-details {
   display: flex;
   flex-direction: column;
@@ -228,6 +239,7 @@ defineProps({
   border-radius: 8px;
 }
 
+/* 品质小结特殊高亮样式 */
 .detail-item.summary {
   background: linear-gradient(135deg, #fff3e0, #ffe0b2);
   border-left: 3px solid var(--accent-color);

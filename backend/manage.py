@@ -1,9 +1,16 @@
 #!/usr/bin/env python
+"""
+农产品溯源系统 - Django命令行管理工具。
+
+用于执行数据库迁移、创建超级用户、收集静态文件等管理操作。
+"""
+
 import os
 import sys
 
 
 def main():
+    """执行Django管理命令。"""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
     try:
         from django.core.management import execute_from_command_line

@@ -61,8 +61,14 @@
 </template>
 
 <script setup>
+/**
+ * 媒体图片画廊组件
+ * 提供图片轮播展示、自动播放、手动切换及全屏预览功能
+ */
+
 import { ref, onMounted, onUnmounted } from 'vue'
 
+// 接收父组件传入的图片地址数组
 const props = defineProps({
   images: {
     type: Array,
@@ -70,27 +76,33 @@ const props = defineProps({
   }
 })
 
+// 轮播当前索引、预览弹窗状态、预览图片索引
 const currentIndex = ref(0)
 const showPreview = ref(false)
 const previewIndex = ref(0)
+// 自动播放定时器引用
 let autoPlayTimer = null
 
+/** 切换到上一张轮播图 */
 const prevSlide = () => {
   currentIndex.value = currentIndex.value === 0
     ? props.images.length - 1
     : currentIndex.value - 1
 }
 
+/** 切换到下一张轮播图 */
 const nextSlide = () => {
   currentIndex.value = currentIndex.value === props.images.length - 1
     ? 0
     : currentIndex.value + 1
 }
 
+/** 跳转到指定索引的轮播图 */
 const goToSlide = (index) => {
   currentIndex.value = index
 }
 
+/** 启动自动轮播（每5秒切换一次） */
 const startAutoPlay = () => {
   stopAutoPlay()
   if (props.images.length > 1) {
@@ -100,6 +112,7 @@ const startAutoPlay = () => {
   }
 }
 
+/** 停止自动轮播 */
 const stopAutoPlay = () => {
   if (autoPlayTimer) {
     clearInterval(autoPlayTimer)
@@ -107,29 +120,34 @@ const stopAutoPlay = () => {
   }
 }
 
+/** 打开图片全屏预览，并暂停自动轮播 */
 const openPreview = (index) => {
   previewIndex.value = index
   showPreview.value = true
   stopAutoPlay()
 }
 
+/** 关闭图片预览，并恢复自动轮播 */
 const closePreview = () => {
   showPreview.value = false
   startAutoPlay()
 }
 
+/** 预览模式下切换到上一张 */
 const prevPreview = () => {
   previewIndex.value = previewIndex.value === 0
     ? props.images.length - 1
     : previewIndex.value - 1
 }
 
+/** 预览模式下切换到下一张 */
 const nextPreview = () => {
   previewIndex.value = previewIndex.value === props.images.length - 1
     ? 0
     : previewIndex.value + 1
 }
 
+// 组件挂载时启动自动轮播，卸载时清除定时器
 onMounted(() => {
   startAutoPlay()
 })
@@ -140,6 +158,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* 画廊根容器 */
 .media-gallery {
   display: flex;
   flex-direction: column;
@@ -166,6 +185,7 @@ onUnmounted(() => {
   position: relative;
 }
 
+/* 轮播容器样式 */
 .carousel {
   position: relative;
   width: 100%;
@@ -197,6 +217,7 @@ onUnmounted(() => {
   transform: scale(1.02);
 }
 
+/* 轮播翻页按钮 */
 .carousel-btn {
   position: absolute;
   top: 50%;
@@ -229,6 +250,7 @@ onUnmounted(() => {
   right: 12px;
 }
 
+/* 轮播指示器（底部圆点） */
 .carousel-indicators {
   position: absolute;
   bottom: 16px;
@@ -261,6 +283,7 @@ onUnmounted(() => {
   color: var(--secondary-text);
 }
 
+/* 全屏图片预览弹窗 */
 .image-preview {
   position: fixed;
   top: 0;
@@ -302,6 +325,7 @@ onUnmounted(() => {
   justify-content: center;
 }
 
+/* 预览弹窗底部导航栏 */
 .preview-nav {
   display: flex;
   justify-content: space-between;

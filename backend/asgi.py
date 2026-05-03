@@ -1,10 +1,7 @@
 """
-ASGI config for backend project.
+农产品溯源系统 - ASGI入口模块。
 
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/6.0/howto/deployment/asgi/
+暴露ASGI可调用对象，用于支持异步服务器（如Daphne、Uvicorn）部署。
 """
 
 import os

@@ -1,14 +1,26 @@
+"""
+农产品溯源系统 - 开发环境Django配置。
+
+包含数据库、中间件、应用注册、跨域等核心配置项，
+适用于本地开发和调试。
+"""
+
 import os
 from pathlib import Path
 
+# 项目根目录（backend/的上级目录）
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# 开发环境密钥（生产环境务必替换）
 SECRET_KEY = 'django-insecure-dev-key-change-in-production-1234567890'
 
+# 开发模式开启调试
 DEBUG = True
 
+# 允许所有主机访问（仅限开发环境）
 ALLOWED_HOSTS = ['*']
 
+# 已安装应用
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -52,6 +64,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# 使用SQLite数据库（轻量级，适合开发环境）
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -86,10 +99,13 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# 开发环境允许所有跨域请求
 CORS_ALLOW_ALL_ORIGINS = True
 
+# 允许携带凭证（Cookie等）
 CORS_ALLOW_CREDENTIALS = True
 
+# REST Framework 配置
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,

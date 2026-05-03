@@ -1,9 +1,15 @@
 <script setup>
+/**
+ * 示例组件（HelloWorld）
+ * 由 Vite + Vue 脚手架生成的默认欢迎页面，用于展示项目初始模板
+ */
+
 import { ref } from 'vue'
 import viteLogo from '../assets/vite.svg'
 import heroImg from '../assets/hero.png'
 import vueLogo from '../assets/vue.svg'
 
+// 计数器状态，点击按钮自增
 const count = ref(0)
 </script>
 

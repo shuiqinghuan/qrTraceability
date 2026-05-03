@@ -10,7 +10,7 @@
         <span class="value highlight">{{ product.name }}</span>
         <span class="code-badge">编码: {{ product.code }}</span>
       </div>
-      
+
       <div class="info-item">
         <span class="icon-label">
           <span class="icon">📍</span>
@@ -18,7 +18,7 @@
         </span>
         <span class="value">{{ product.plantingLocation }}</span>
       </div>
-      
+
       <div class="info-item">
         <span class="icon-label">
           <span class="icon">📅</span>
@@ -31,6 +31,12 @@
 </template>
 
 <script setup>
+/**
+ * 产品基本信息展示组件
+ * 展示农产品的品种名称、编码、定植地点和定植时间
+ */
+
+// 接收父组件传入的产品基础信息
 defineProps({
   product: {
     type: Object,
@@ -46,6 +52,7 @@ defineProps({
 </script>
 
 <style scoped>
+/* 组件根容器 */
 .product-info {
   height: 100%;
 }
@@ -64,6 +71,7 @@ defineProps({
   font-size: 24px;
 }
 
+/* 信息内容区域 */
 .info-content {
   display: flex;
   flex-direction: column;
@@ -76,6 +84,7 @@ defineProps({
   gap: 6px;
 }
 
+/* 产品名称高亮卡片 */
 .info-item.product-name {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   padding: 16px;
@@ -93,6 +102,7 @@ defineProps({
   font-weight: bold;
 }
 
+/* 产品编码徽章 */
 .product-name .code-badge {
   display: inline-block;
   background: rgba(255, 255, 255, 0.2);

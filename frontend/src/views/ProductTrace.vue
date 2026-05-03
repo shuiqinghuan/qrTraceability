@@ -45,6 +45,7 @@
   </div>
 </template>
 
+<!-- 产品溯源详情页：展示产品的媒体图片、基本信息和采收质量数据 -->
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -55,8 +56,12 @@ import { getProductByCode } from '../api/product'
 
 const route = useRoute()
 const router = useRouter()
-const loading = ref(true)
-const error = ref(null)
+
+// 页面状态
+const loading = ref(true)    // 是否正在加载
+const error = ref(null)      // 错误信息
+
+// 产品数据，包含基本信息、媒体图片和采收质量
 const productData = ref({
   name: '',
   code: '',
@@ -74,11 +79,13 @@ const productData = ref({
   }
 })
 
+/** 根据路由中的产品溯源码加载产品数据，兼容驼峰和下划线字段命名 */
 const loadProductData = async () => {
   loading.value = true
   error.value = null
   
   try {
+    // 从路由参数获取产品码，未提供时使用默认值'4395'
     const productCode = route.params.code || '4395'
     const response = await getProductByCode(productCode)
     
@@ -119,10 +126,12 @@ const loadProductData = async () => {
   }
 }
 
+/** 返回首页产品列表 */
 const goBack = () => {
   router.push('/')
 }
 
+// 组件挂载后自动加载产品数据
 onMounted(() => {
   loadProductData()
 })

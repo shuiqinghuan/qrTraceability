@@ -1,3 +1,9 @@
+/* ============================================================
+   全局样式文件（HelloWorld 组件配套）
+   定义 CSS 变量、基础排版、深色模式适配及各区块布局
+   ============================================================ */
+
+/* CSS 自定义属性（亮色主题默认值） */
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -30,6 +36,7 @@
   }
 }
 
+/* 深色模式适配 */
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;
@@ -54,6 +61,7 @@ body {
   margin: 0;
 }
 
+/* 标题基础样式 */
 h1,
 h2 {
   font-family: var(--heading);
@@ -83,6 +91,7 @@ p {
   margin: 0;
 }
 
+/* 内联代码和计数器 */
 code,
 .counter {
   font-family: var(--mono);
@@ -117,6 +126,7 @@ code {
   }
 }
 
+/* 主视觉英雄区域（Logo 堆叠动画） */
 .hero {
   position: relative;
 
@@ -156,6 +166,7 @@ code {
   }
 }
 
+/* 应用根容器 */
 #app {
   width: 1126px;
   max-width: 100%;
@@ -182,6 +193,7 @@ code {
   }
 }
 
+/* "下一步" 信息区块（文档与社交链接） */
 #next-steps {
   display: flex;
   border-top: 1px solid var(--border);
@@ -216,6 +228,7 @@ code {
   }
 }
 
+/* 社交链接列表 */
 #next-steps ul {
   list-style: none;
   padding: 0;
@@ -265,6 +278,7 @@ code {
   }
 }
 
+/* 底部留白区域 */
 #spacer {
   height: 88px;
   border-top: 1px solid var(--border);
@@ -273,6 +287,7 @@ code {
   }
 }
 
+/* 装饰性刻度线 */
 .ticks {
   position: relative;
   width: 100%;

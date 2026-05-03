@@ -1,3 +1,9 @@
+/* ============================================================
+   项目主样式文件
+   定义溯源系统全局 CSS 变量、基础重置、通用排版及卡片样式
+   ============================================================ */
+
+/* 全局 CSS 自定义属性（主题色、卡片、间距等） */
 :root {
   --primary-color: #4CAF50;
   --secondary-color: #8BC34A;
@@ -12,12 +18,14 @@
   --card-gap: 20px;
 }
 
+/* 全局盒模型重置 */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* 页面基础样式（字体、背景色、行高） */
 body {
   font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   background-color: var(--background-color);
@@ -25,6 +33,7 @@ body {
   line-height: 1.6;
 }
 
+/* 通用排版样式 */
 .page-title {
   font-size: 28px;
   font-weight: bold;
@@ -49,6 +58,7 @@ body {
   color: var(--secondary-text);
 }
 
+/* 通用卡片容器样式 */
 .card {
   background: var(--card-bg);
   border-radius: var(--card-radius);

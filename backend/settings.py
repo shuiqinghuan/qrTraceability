@@ -1,5 +1,8 @@
 """
-Django settings for agricultural traceability system.
+农产品溯源系统 - 生产环境Django配置。
+
+包含数据库、中间件、应用注册、静态文件、CORS跨域、
+REST框架及日志等核心配置项。
 """
 
 import os
@@ -7,15 +10,15 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# 安全密钥，生产环境务必通过环境变量设置
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-change-this-in-production')
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# 调试模式，生产环境必须设为False
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
-# Application definition
+# 已安装应用列表
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -58,7 +61,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Database
+# 数据库配置（默认使用SQLite，生产环境建议切换为PostgreSQL）
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -66,7 +69,7 @@ DATABASES = {
     }
 }
 
-# Password validation
+# 密码验证规则
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -82,20 +85,20 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
+# 国际化与本地化配置
 LANGUAGE_CODE = 'zh-hans'
 TIME_ZONE = 'Asia/Shanghai'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# 静态文件配置
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# Media files
+# 媒体文件配置（用户上传文件存储路径）
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -106,11 +109,11 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50MB in bytes
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS settings
+# CORS跨域配置（调试模式下允许所有源，生产环境需指定允许的域名）
 CORS_ALLOW_ALL_ORIGINS = DEBUG
 CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', '').split(',') if not DEBUG else []
 
-# REST Framework settings
+# Django REST Framework 配置
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
@@ -119,7 +122,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-# Logging configuration
+# 日志配置（控制台输出INFO级别以上日志）
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

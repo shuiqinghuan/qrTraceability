@@ -1,7 +1,17 @@
+"""
+产品数据模型模块
+
+定义农产品溯源系统的核心数据模型，包括：
+- Product: 产品基本信息（品种名称、编码、定植地点等）
+- Media: 产品关联的多媒体资源（图片、视频）
+- HarvestQuality: 产品的采收质量信息（糖度、重量、口感等）
+"""
+
 from django.db import models
 
 
 class Product(models.Model):
+    """产品模型，存储农产品的基本信息"""
     name = models.CharField('品种名称', max_length=100)
     code = models.CharField('品种编码', max_length=50, unique=True)
     planting_location = models.CharField('定植地点', max_length=255)
@@ -19,6 +29,7 @@ class Product(models.Model):
 
 
 class Media(models.Model):
+    """多媒体模型，存储产品关联的图片和视频资源"""
     MEDIA_TYPE_CHOICES = [
         ('image', '图片'),
         ('video', '视频'),
@@ -43,12 +54,14 @@ class Media(models.Model):
         return f'{self.get_media_type_display()} - {self.product.name}'
 
     def get_media_url(self):
+        """获取媒体资源的访问地址，优先返回上传文件的URL，其次返回外部链接"""
         if self.file:
             return self.file.url
         return self.url
 
 
 class HarvestQuality(models.Model):
+    """采收质量模型，记录产品的品质检测数据，与产品为一对一关系"""
     product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name='harvest_quality', verbose_name='关联产品')
     harvest_start_date = models.DateField('采收起始时间')
     harvest_end_date = models.DateField('采收终止时间')

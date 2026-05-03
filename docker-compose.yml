@@ -1,6 +1,9 @@
+# 农产品溯源系统 - Docker Compose编排配置
+# 启动命令：docker-compose up -d
 version: '3.8'
 
 services:
+  # 后端Django服务
   backend:
     build:
       context: .
@@ -8,20 +11,22 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./db.sqlite3:/app/db.sqlite3
-      - ./media:/app/media
-      - ./staticfiles:/app/staticfiles
+      - ./db.sqlite3:/app/db.sqlite3   # 挂载数据库文件，确保数据持久化
+      - ./media:/app/media              # 挂载媒体文件目录
+      - ./staticfiles:/app/staticfiles  # 挂载静态文件目录
     environment:
       - DEBUG=True
       - DJANGO_SECRET_KEY=your-secret-key-change-in-production-12345
       - ALLOWED_HOSTS=localhost,127.0.0.1,backend,47.104.189.148
     restart: unless-stopped
+    # 启动时执行数据库迁移、创建测试数据、收集静态文件，然后启动Gunicorn
     command: >
       sh -c "python manage.py migrate &&
              python manage.py create_test_data &&
              python manage.py collectstatic --noinput &&
              gunicorn backend.wsgi:application --bind 0.0.0.0:8000 --workers 2"
 
+  # 前端Nginx服务
   frontend:
     build:
       context: ./frontend
@@ -29,12 +34,13 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./media:/app/media:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro  # 挂载Nginx配置（只读）
+      - ./media:/app/media:ro                            # 挂载媒体文件目录（只读）
     depends_on:
-      - backend
+      - backend  # 依赖后端服务启动
     restart: unless-stopped
 
+# 自定义网络，便于服务间通信
 networks:
   default:
     name: traceability-network

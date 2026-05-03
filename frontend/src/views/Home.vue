@@ -91,21 +91,26 @@
   </div>
 </template>
 
+<!-- 首页视图：展示产品列表，支持搜索和分页功能 -->
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getProductList } from '../api/product'
 
 const router = useRouter()
-const products = ref([])
-const total = ref(0)
-const currentPage = ref(1)
-const pageSize = ref(1)
-const loading = ref(false)
-const searchQuery = ref('')
 
+// 响应式状态
+const products = ref([])       // 产品列表数据
+const total = ref(0)           // 产品总数
+const currentPage = ref(1)     // 当前页码
+const pageSize = ref(1)        // 每页显示数量
+const loading = ref(false)     // 加载状态
+const searchQuery = ref('')    // 搜索关键词
+
+// 计算总页数
 const totalPages = computed(() => Math.ceil(total.value / pageSize.value))
 
+/** 加载产品列表数据 */
 const loadProducts = async (page = 1) => {
   loading.value = true
   try {
@@ -124,6 +129,7 @@ const loadProducts = async (page = 1) => {
   }
 }
 
+/** 搜索处理：匹配产品名称或编号，匹配成功跳转到溯源详情页 */
 const handleSearch = () => {
   if (searchQuery.value) {
     const found = products.value.find(p =>
@@ -136,6 +142,7 @@ const handleSearch = () => {
   }
 }
 
+/** 上一页 */
 const prevPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--
@@ -143,6 +150,7 @@ const prevPage = () => {
   }
 }
 
+/** 下一页 */
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++
@@ -150,6 +158,7 @@ const nextPage = () => {
   }
 }
 
+// 组件挂载后加载首页产品数据
 onMounted(() => {
   loadProducts(currentPage.value)
 })
