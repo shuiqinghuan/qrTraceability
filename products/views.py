@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.parsers import MultiPartParser, FormParser
 from django.shortcuts import get_object_or_404
 from .models import Product, Media, HarvestQuality
 from .serializers import (
@@ -95,18 +96,20 @@ class ProductDetailView(APIView):
 
 
 class ProductMediaListView(APIView):
+    parser_classes = [MultiPartParser, FormParser]
+
     def get(self, request, productId):
         try:
             product = Product.objects.get(pk=productId)
         except Product.DoesNotExist:
             return api_response(code=404, message='产品不存在')
-        
+
         media_type = request.query_params.get('type')
         media = product.media.all()
         if media_type:
             media = media.filter(media_type=media_type)
-        
-        serializer = MediaSerializer(media, many=True)
+
+        serializer = MediaSerializer(media, many=True, context={'request': request})
         return api_response(serializer.data)
 
     def post(self, request, productId):
@@ -114,12 +117,12 @@ class ProductMediaListView(APIView):
             product = Product.objects.get(pk=productId)
         except Product.DoesNotExist:
             return api_response(code=404, message='产品不存在')
-        
+
         data = request.data.copy()
-        serializer = MediaSerializer(data=data)
+        serializer = MediaSerializer(data=data, context={'request': request})
         if serializer.is_valid():
             serializer.save(product=product)
-            return api_response(serializer.data, code=201, message='创建成功')
+            return api_response(serializer.data, code=201, message='上传成功')
         return api_response(code=400, message=list(serializer.errors.values())[0][0] if serializer.errors else '参数错误')
 
 

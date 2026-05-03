@@ -31,12 +31,11 @@
             <span class="metric-value">{{ harvest.sugarContent }}</span>
           </div>
           <div class="progress-bar">
-            <div 
-              class="progress-fill sugar" 
-              :style="{ width: `${(harvest.sugarContent / 25) * 100}%` }"
+            <div
+              class="progress-fill sugar"
+              :style="{ width: `${(harvest.sugarContent / 20) * 100}%` }"
             ></div>
           </div>
-          <span class="metric-hint">适中范围: 12-18 Brix</span>
         </div>
 
         <div class="metric-item">
@@ -45,12 +44,11 @@
             <span class="metric-value">{{ harvest.weight }}g</span>
           </div>
           <div class="progress-bar">
-            <div 
-              class="progress-fill weight" 
-              :style="{ width: `${(harvest.weight / 500) * 100}%` }"
+            <div
+              class="progress-fill weight"
+              :style="{ width: `${(harvest.weight / 30) * 100}%` }"
             ></div>
           </div>
-          <span class="metric-hint">优质标准: 250-350g</span>
         </div>
       </div>
 
@@ -214,11 +212,6 @@ defineProps({
 
 .progress-fill.weight {
   background: linear-gradient(90deg, var(--accent-color), #ffb74d);
-}
-
-.metric-hint {
-  font-size: 11px;
-  color: var(--secondary-text);
 }
 
 .quality-details {

@@ -1,14 +1,17 @@
 # 农产品溯源系统
 
-基于 Vue 3 + Django REST Framework 的农产品溯源信息展示系统。消费者可通过本系统追溯农产品的品种信息、种植过程、采收质量等全流程数据，提升产品透明度和信任度。
+基于 Vue 3 + Django REST Framework 的农产品溯源信息展示系统。消费者可通过扫描二维码或访问链接追溯农产品的品种信息、种植过程、采收质量等全流程数据，提升产品透明度和信任度。
+
+**线上地址：** http://47.104.189.148/
 
 ## 功能特性
 
+- **产品列表分页展示**：首页展示所有品种，支持分页浏览，点击进入详情页
 - **产品基本信息展示**：品种名称、品种编码、定植地点、定植时间
-- **多媒体信息展示**：产品图片轮播、视频播放功能
-- **采收质量信息展示**：采收时间、糖度、重量、口感描述、适应人群、品质小结
+- **多媒体信息展示**：产品图片轮播、支持文件上传与URL两种方式
+- **采收质量信息展示**：采收时间、糖度(Brix)、单果重量、口感描述、适应人群、品质小结
 - **响应式设计**：适配桌面端、平板端、移动端
-- **RESTful API**：标准化的后端接口设计
+- **RESTful API**：标准化的后端接口设计，支持分页查询
 
 ## 技术栈
 
@@ -26,76 +29,104 @@
 - SQLite（默认数据库）
 - Gunicorn（WSGI 服务器）
 
+### 部署
+
+- Docker + Docker Compose 容器化部署
+- Nginx 反向代理与静态资源服务
+
 ## 项目结构
 
 ```
-agricultural-traceability-system/
-├── frontend/                      # 前端项目
+qrTraceability/
+├── frontend/                          # 前端项目
+│   ├── Dockerfile                     # 前端容器构建文件
 │   ├── src/
-│   │   ├── api/                  # API 请求封装
-│   │   │   ├── index.js          # Axios 配置
-│   │   │   └── product.js        # 产品接口
-│   │   ├── components/           # Vue 组件
-│   │   │   ├── ProductInfo.vue   # 产品基本信息
-│   │   │   ├── MediaGallery.vue  # 多媒体展示
-│   │   │   └── HarvestQuality.vue # 采收质量
+│   │   ├── api/                       # API 请求封装
+│   │   │   ├── index.js               # Axios 实例配置
+│   │   │   └── product.js             # 产品相关接口
+│   │   ├── components/                # Vue 组件
+│   │   │   ├── ProductInfo.vue        # 产品基本信息卡片
+│   │   │   ├── MediaGallery.vue       # 多媒体图片轮播
+│   │   │   ├── MediaUpload.vue        # 多媒体文件上传
+│   │   │   └── HarvestQuality.vue     # 采收质量信息卡片
 │   │   ├── views/
-│   │   │   └── ProductTrace.vue  # 产品溯源页面
+│   │   │   ├── Home.vue               # 首页（产品列表分页）
+│   │   │   ├── ProductTrace.vue       # 产品溯源详情页
+│   │   │   └── About.vue              # 关于页面
 │   │   ├── router/
-│   │   │   └── index.js          # 路由配置
+│   │   │   └── index.js               # 路由配置
 │   │   ├── styles/
-│   │   │   └── main.css          # 全局样式
-│   │   ├── App.vue
-│   │   └── main.js
-│   ├── public/                   # 静态资源
-│   ├── index.html
+│   │   │   └── main.css               # 全局样式与CSS变量
+│   │   ├── App.vue                    # 根组件（router-view）
+│   │   └── main.js                    # 入口文件
+│   ├── public/
+│   │   └── upload.html                # 独立上传页面
 │   ├── package.json
-│   └── vite.config.js            # Vite 配置
-├── backend/                      # 后端项目
-│   ├── products/                 # 产品应用
-│   │   ├── models.py             # 数据模型
-│   │   ├── views.py              # API 视图
-│   │   ├── serializers.py         # 序列化器
-│   │   ├── urls.py               # 路由配置
-│   │   └── admin.py              # Admin 配置
-│   ├── manage.py
-│   ├── settings.py               # 项目配置
-│   ├── wsgi.py                  # WSGI 配置
-│   ├── requirements.txt          # Python 依赖
-│   ├── deploy.sh                # 部署脚本
-│   └── .env.example             # 环境变量示例
-├── prd.md                       # 产品需求文档
-├── database-design.md           # 数据库设计文档
-└── API接口文档.md               # API 接口文档
+│   └── vite.config.js
+├── backend/                           # 后端项目
+│   ├── settings.py                    # Django 配置
+│   ├── urls.py                        # URL 路由
+│   ├── wsgi.py                        # WSGI 配置
+│   └── requirements.txt               # Python 依赖
+├── products/                          # 产品应用（Django App）
+│   ├── models.py                      # 数据模型
+│   ├── views.py                       # API 视图
+│   ├── serializers.py                 # 序列化器
+│   ├── urls.py                        # 应用路由
+│   ├── admin.py                       # Admin 后台配置
+│   └── management/
+│       └── commands/
+│           └── create_test_data.py    # 测试数据初始化命令
+├── Dockerfile                         # 后端容器构建文件
+├── docker-compose.yml                 # Docker Compose 编排文件
+├── nginx.conf                         # Nginx 反向代理配置
+├── manage.py                          # Django 管理脚本
+├── db.sqlite3                         # SQLite 数据库文件
+├── prd.md                             # 产品需求文档
+├── database-design.md                 # 数据库设计文档
+└── API接口文档.md                      # API 接口文档
 ```
 
 ## 快速开始
 
 ### 环境要求
 
-- Python 3.10+
-- Node.js 18+
-- npm 9+
+- Docker 20+
+- Docker Compose 2+
 
-### 1. 克隆项目
+### 使用 Docker Compose 部署（推荐）
 
 ```bash
+# 克隆项目
 git clone <repository-url>
-cd agricultural-traceability-system
+cd qrTraceability
+
+# 构建并启动所有服务
+docker compose up -d --build
+
+# 查看运行状态
+docker compose ps
+
+# 查看日志
+docker compose logs -f
 ```
 
-### 2. 后端设置
+启动完成后访问：
+- 前端页面：http://localhost
+- 后端 API：http://localhost:8000/api
+- 管理后台：http://localhost:8000/admin
+
+### 本地开发
+
+#### 后端
 
 ```bash
-cd backend
-
-# 创建虚拟环境（推荐）
+# 创建虚拟环境
 python3 -m venv venv
-source venv/bin/activate  # Linux/Mac
-# venv\Scripts\activate    # Windows
+source venv/bin/activate
 
 # 安装依赖
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 
 # 执行数据库迁移
 python manage.py migrate
@@ -103,14 +134,11 @@ python manage.py migrate
 # 创建测试数据
 python manage.py create_test_data
 
-# 创建管理员账户（可选）
-python manage.py createsuperuser
-
 # 启动开发服务器
 python manage.py runserver 0.0.0.0:8000
 ```
 
-### 3. 前端设置
+#### 前端
 
 ```bash
 cd frontend
@@ -122,218 +150,111 @@ npm install
 npm run dev
 ```
 
-### 4. 访问应用
+前端开发服务器默认运行在 http://localhost:5173，API 请求通过 Vite 代理转发到后端。
 
-- 前端页面：http://localhost:5173
-- 后端 API：http://localhost:8000/api
-- 管理后台：http://localhost:8000/admin
+## Docker 部署架构
 
-## 生产环境部署
-
-### 方式一：使用 Nginx + Gunicorn（推荐）
-
-#### 1. 构建前端
-
-```bash
-cd frontend
-npm install
-npm run build
+```
+┌─────────────────────────────────────────────────┐
+│                   Docker Compose                 │
+│                                                  │
+│  ┌──────────────┐       ┌─────────────────────┐  │
+│  │   frontend   │       │      backend        │  │
+│  │  (Nginx:80)  │──────>│  (Gunicorn:8000)    │  │
+│  │  Vue SPA     │ /api  │  Django REST API    │  │
+│  └──────────────┘       └─────────────────────┘  │
+│         │                        │               │
+│         │ /media                 │ db.sqlite3    │
+│         ▼                        ▼               │
+│  ┌──────────────┐       ┌─────────────────────┐  │
+│  │  media 卷    │       │   db.sqlite3 卷     │  │
+│  └──────────────┘       └─────────────────────┘  │
+└─────────────────────────────────────────────────┘
 ```
 
-构建产物位于 `frontend/dist` 目录。
-
-#### 2. 配置 Nginx
-
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
-
-    # 前端静态文件
-    location / {
-        root /path/to/frontend/dist;
-        try_files $uri $uri/ /index.html;
-    }
-
-    # API 代理
-    location /api/ {
-        proxy_pass http://127.0.0.1:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    # 静态文件
-    location /static/ {
-        alias /path/to/backend/staticfiles/;
-    }
-}
-```
-
-#### 3. 使用 Gunicorn 运行后端
-
-```bash
-cd backend
-gunicorn backend.wsgi:application --bind 0.0.0.0:8000 --workers 3
-```
-
-#### 4. 配置系统服务（systemd）
-
-创建服务文件 `/etc/systemd/system/traceability.service`：
-
-```ini
-[Unit]
-Description=Agricultural Traceability System
-After=network.target
-
-[Service]
-User=www-data
-Group=www-data
-WorkingDirectory=/path/to/backend
-ExecStart=/path/to/backend/venv/bin/gunicorn backend.wsgi:application --bind 127.0.0.1:8000 --workers 3
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
-
-启动服务：
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable traceability
-sudo systemctl start traceability
-```
-
-### 方式二：使用 Docker（可选）
-
-创建 `Dockerfile`：
-
-```dockerfile
-FROM python:3.11-slim
-
-WORKDIR /app
-
-COPY backend/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY backend/ .
-
-RUN python manage.py migrate
-RUN python manage.py collectstatic --noinput
-
-EXPOSE 8000
-
-CMD ["gunicorn", "backend.wsgi:application", "--bind", "0.0.0.0:8000"]
-```
-
-构建并运行：
-
-```bash
-docker build -t traceability .
-docker run -d -p 8000:8000 traceability
-```
-
-### 环境变量配置
-
-在生产环境中，创建 `backend/.env` 文件：
-
-```bash
-DJANGO_SECRET_KEY=your-super-secret-key-here
-DEBUG=False
-ALLOWED_HOSTS=your-domain.com,www.your-domain.com
-CORS_ALLOWED_ORIGINS=https://your-frontend-domain.com
-```
+- **frontend 容器**：构建 Vue 项目，通过 Nginx 提供静态资源，反向代理 `/api` 到后端
+- **backend 容器**：运行 Django 应用，执行数据库迁移、创建测试数据、启动 Gunicorn
+- **共享卷**：`media` 目录和 `db.sqlite3` 通过 volume 在两个容器间共享
 
 ## API 接口
-
-### 基础信息
-
-- 基础 URL：`http://localhost:8000/api`
-- 数据格式：JSON
-- 认证方式：暂无（后续可扩展）
 
 ### 主要接口
 
 | 接口地址 | 方法 | 说明 |
 |---------|------|------|
-| `/api/products/` | GET | 获取产品列表 |
-| `/api/products/{code}/` | GET | 获取产品详情（按编码） |
+| `/api/products/` | GET | 获取产品列表（支持分页） |
 | `/api/products/` | POST | 创建产品 |
-| `/api/products/{id}/media/` | GET/POST | 多媒体列表/添加 |
-| `/api/products/{id}/harvest/` | GET/POST | 采收质量信息 |
+| `/api/products/{code}/` | GET | 获取产品详情（按编码或ID） |
+| `/api/products/{id}/` | PUT | 更新产品信息 |
+| `/api/products/{id}/` | DELETE | 删除产品 |
+| `/api/products/{id}/media/` | GET | 获取产品多媒体列表 |
+| `/api/products/{id}/media/` | POST | 上传多媒体文件 |
+| `/api/media/{id}/` | DELETE | 删除多媒体 |
+| `/api/products/{id}/harvest/` | GET | 获取采收质量信息 |
+| `/api/products/{id}/harvest/` | POST | 创建/更新采收质量信息 |
+
+### 通用响应格式
+
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": { ... }
+}
+```
 
 详细接口文档请参阅 [API接口文档.md](./API接口文档.md)。
 
 ## 数据库设计
 
-系统使用 SQLite 数据库，包含以下主要表：
+系统使用 SQLite 数据库，包含三张核心表：
 
-- **product**：产品基本信息表
-- **media**：多媒体信息表（图片/视频）
-- **harvest_quality**：采收质量信息表
+| 表名 | 中文名 | 说明 | 关系 |
+|------|--------|------|------|
+| product | 产品信息表 | 存储品种名称、编码、定植信息 | 主表 |
+| media | 多媒体信息表 | 存储产品图片和视频（支持文件上传和URL） | 多对一关联 product |
+| harvest_quality | 采收质量信息表 | 存储糖度、重量、口感等质量数据 | 一对一关联 product |
 
 详细设计请参阅 [database-design.md](./database-design.md)。
 
-## 配置说明
+## 路由说明
 
-### 前端环境变量
-
-创建 `frontend/.env` 文件：
-
-```bash
-VITE_API_BASE_URL=http://localhost:8000/api
-```
-
-### 后端环境变量
-
-```bash
-DJANGO_SECRET_KEY=your-secret-key
-DEBUG=False
-ALLOWED_HOSTS=localhost,127.0.0.1
-```
+| 路径 | 页面 | 说明 |
+|------|------|------|
+| `/` | 首页 | 产品列表分页展示，点击产品卡片进入详情 |
+| `/product/{code}` | 详情页 | 展示产品溯源信息，包含返回列表按钮 |
 
 ## 常见问题
 
 ### 1. 前端无法访问后端 API
 
-检查后端是否正常启动，并确认 CORS 配置正确。开发环境下前端已配置 API 代理。
+检查后端容器是否正常运行：`docker compose ps`，查看后端日志：`docker compose logs backend`。
 
 ### 2. 数据库迁移失败
 
-确保在正确的目录下执行 `python manage.py migrate`，并检查数据库文件权限。
+进入后端容器执行迁移：`docker compose exec backend python manage.py migrate`。
 
-### 3. 静态文件无法加载
+### 3. 上传文件无法访问
 
-执行 `python manage.py collectstatic`，并确保 Nginx 配置了正确的静态文件路径。
+确认 `media` 目录已正确挂载，Nginx 配置了 `/media/` 路径的 alias。
 
-### 4. 前端构建失败
+### 4. 页面刷新后 404
 
-检查 Node.js 版本，确保为 18+。删除 `node_modules` 和 `package-lock.json` 后重新安装依赖。
+确认 Nginx 配置了 `try_files $uri $uri/ /index.html;` 以支持 Vue Router 的 history 模式。
 
-## 开发指南
+## 开发计划
 
-### 添加新产品功能
-
-1. 在 `backend/products/models.py` 中添加模型
-2. 执行 `python manage.py makemigrations`
-3. 执行 `python manage.py migrate`
-4. 在 `backend/products/serializers.py` 中添加序列化器
-5. 在 `backend/products/views.py` 中添加视图
-6. 在 `backend/products/urls.py` 中添加路由
-7. 更新前端组件和 API 调用
-
-### 修改现有功能
-
-1. 修改对应的模型/序列化器/视图
-2. 更新前端组件
-3. 测试功能正常
+| 阶段 | 任务 | 状态 |
+|------|------|------|
+| 第一阶段 | PRD 文档编写 | 已完成 |
+| 第二阶段 | Vue 前端开发 | 已完成 |
+| 第三阶段 | 数据库设计 | 已完成 |
+| 第四阶段 | API 接口文档 | 已完成 |
+| 第五阶段 | Django 后端开发 | 已完成 |
+| 第六阶段 | 前后端对接 | 已完成 |
+| 第七阶段 | Docker 容器化部署 | 已完成 |
+| 第八阶段 | 测试与优化 | 进行中 |
 
 ## 许可证
 
 本项目仅供学习交流使用。
-
-## 联系方式
-
-如有问题，请提交 Issue 或联系开发者。

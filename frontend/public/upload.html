@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片上传 - 农产品溯源系统</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #444;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        .file-input-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-button {
+            width: 100%;
+            padding: 20px;
+            background: #f8f9fa;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            text-align: center;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .file-button:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        .file-button .icon {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .file-info {
+            margin-top: 10px;
+            padding: 12px;
+            background: #e8f5e9;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #2e7d32;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+        .file-info.show {
+            display: flex;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .message {
+            margin-top: 15px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            display: none;
+            font-size: 14px;
+        }
+        .message.show {
+            display: block;
+        }
+        .message.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+        .message.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+        }
+        .preview-section {
+            margin-top: 25px;
+            display: none;
+        }
+        .preview-section.show {
+            display: block;
+        }
+        .preview-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .preview-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+        }
+        .preview-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+        .preview-info {
+            flex: 1;
+        }
+        .preview-info .title {
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+        .preview-info .url {
+            font-size: 12px;
+            color: #666;
+            word-break: break-all;
+            margin-top: 4px;
+        }
+        .nav-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .nav-link:hover {
+            text-decoration: underline;
+        }
+        .tips {
+            margin-top: 20px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+        .tips h4 {
+            color: #444;
+            margin-bottom: 8px;
+        }
+        .tips ul {
+            margin-left: 20px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="nav-link">← 返回首页</a>
+        <h1>
+            <span>🖼️</span>
+            图片上传
+        </h1>
+        <p class="subtitle">上传产品图片到溯源系统</p>
+
+        <div class="form-group">
+            <label for="productId">产品ID</label>
+            <input type="number" id="productId" value="1" min="1">
+        </div>
+
+        <div class="form-group">
+            <label for="title">图片标题（可选）</label>
+            <input type="text" id="title" placeholder="例如：产品正面照、采摘场景等">
+        </div>
+
+        <div class="form-group">
+            <label>选择图片</label>
+            <div class="file-input-wrapper">
+                <div class="file-button" id="fileButton">
+                    <span class="icon">📷</span>
+                    <span>点击选择图片或拖拽到此处</span>
+                </div>
+                <input type="file" id="fileInput" accept="image/*">
+            </div>
+            <div class="file-info" id="fileInfo">
+                <span>✅</span>
+                <span id="fileName"></span>
+                <span id="fileSize"></span>
+            </div>
+        </div>
+
+        <button id="uploadBtn" disabled>上传图片</button>
+
+        <div class="message" id="message"></div>
+
+        <div class="preview-section" id="previewSection">
+            <h3>✅ 已上传的图片</h3>
+            <div id="previewList"></div>
+        </div>
+
+        <div class="tips">
+            <h4>💡 上传提示</h4>
+            <ul>
+                <li>支持格式：JPG、PNG、GIF、WEBP 等常见图片格式</li>
+                <li>最大文件大小：50MB</li>
+                <li>建议使用清晰的产品实拍图片</li>
+                <li>上传后图片会自动在产品详情页展示</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const productId = document.getElementById('productId');
+        const title = document.getElementById('title');
+        const fileInput = document.getElementById('fileInput');
+        const fileButton = document.getElementById('fileButton');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const message = document.getElementById('message');
+        const previewSection = document.getElementById('previewSection');
+        const previewList = document.getElementById('previewList');
+
+        let selectedFile = null;
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                selectedFile = file;
+                fileName.textContent = file.name;
+                fileSize.textContent = '(' + formatFileSize(file.size) + ')';
+                fileInfo.classList.add('show');
+                uploadBtn.disabled = false;
+            }
+        });
+
+        const wrapper = document.querySelector('.file-input-wrapper');
+        wrapper.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            wrapper.style.background = '#f0f4ff';
+        });
+        wrapper.addEventListener('dragleave', () => {
+            wrapper.style.background = '';
+        });
+        wrapper.addEventListener('drop', (e) => {
+            e.preventDefault();
+            wrapper.style.background = '';
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                fileInput.files = e.dataTransfer.files;
+                fileInput.dispatchEvent(new Event('change'));
+            } else {
+                showMessage('请选择图片文件', 'error');
+            }
+        });
+
+        uploadBtn.addEventListener('click', async () => {
+            if (!selectedFile) return
+
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = '⏳ 上传中...';
+
+            const formData = new FormData();
+            formData.append('mediaType', 'image');
+            formData.append('title', title.value);
+            formData.append('file', selectedFile);
+
+            try {
+                const response = await fetch(`/api/products/${productId.value}/media/`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.code === 201) {
+                    showMessage('上传成功！', 'success');
+                    addPreview(result.data);
+
+                    selectedFile = null;
+                    fileInput.value = '';
+                    fileInfo.classList.remove('show');
+                    title.value = '';
+                } else {
+                    showMessage('上传失败: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('上传失败: ' + error.message, 'error');
+            } finally {
+                uploadBtn.textContent = '上传图片';
+                if (!selectedFile) {
+                    uploadBtn.disabled = true;
+                }
+            }
+        });
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+
+        function showMessage(text, type) {
+            message.textContent = text;
+            message.className = 'message show ' + type;
+            setTimeout(() => {
+                message.classList.remove('show');
+            }, 3000);
+        }
+
+        function addPreview(item) {
+            previewSection.classList.add('show');
+            const div = document.createElement('div');
+            div.className = 'preview-item';
+            div.innerHTML = `
+                <img src="${item.url}" alt="${item.title || '图片'}">
+                <div class="preview-info">
+                    <div class="title">${item.title || '产品图片'}</div>
+                    <div class="url">${item.url}</div>
+                </div>
+            `;
+            previewList.insertBefore(div, previewList.firstChild);
+        }
+    </script>
+</body>
+</html>

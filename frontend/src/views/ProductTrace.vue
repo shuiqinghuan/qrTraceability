@@ -8,14 +8,14 @@
         </div>
         <button class="back-btn" @click="goBack">
           <span>←</span>
-          返回
+          返回列表
         </button>
       </div>
     </header>
 
     <main class="main-content" v-if="!loading && !error">
       <div class="media-section">
-        <MediaGallery :images="productData.images" :videos="productData.videos" />
+        <MediaGallery :images="productData.images" />
       </div>
 
       <div class="info-section">
@@ -47,13 +47,14 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import ProductInfo from '../components/ProductInfo.vue'
 import MediaGallery from '../components/MediaGallery.vue'
 import HarvestQuality from '../components/HarvestQuality.vue'
 import { getProductByCode } from '../api/product'
 
 const route = useRoute()
+const router = useRouter()
 const loading = ref(true)
 const error = ref(null)
 const productData = ref({
@@ -62,7 +63,6 @@ const productData = ref({
   plantingLocation: '',
   plantingDate: '',
   images: [],
-  videos: [],
   harvest: {
     startDate: '',
     endDate: '',
@@ -90,7 +90,6 @@ const loadProductData = async () => {
         plantingLocation: data.plantingLocation || data.planting_location || '',
         plantingDate: data.plantingDate || data.planting_date || '',
         images: data.images || [],
-        videos: data.videos || [],
         harvest: data.harvest ? {
           startDate: data.harvest.startDate || data.harvest.start_date || '',
           endDate: data.harvest.endDate || data.harvest.end_date || '',
@@ -121,7 +120,7 @@ const loadProductData = async () => {
 }
 
 const goBack = () => {
-  window.history.back()
+  router.push('/')
 }
 
 onMounted(() => {

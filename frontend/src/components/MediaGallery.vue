@@ -1,53 +1,37 @@
 <template>
   <div class="media-gallery card">
-    <div class="gallery-header">
-      <div class="tabs">
-        <button 
-          class="tab-btn" 
-          :class="{ active: activeTab === 'image' }"
-          @click="switchTab('image')"
-        >
-          <span class="icon">🖼️</span>
-          图片展示
-        </button>
-        <button 
-          class="tab-btn" 
-          :class="{ active: activeTab === 'video' }"
-          @click="switchTab('video')"
-        >
-          <span class="icon">🎬</span>
-          视频展示
-        </button>
-      </div>
-    </div>
+    <h2 class="gallery-title">
+      <span class="icon">🖼️</span>
+      产品图片
+    </h2>
 
     <div class="gallery-content">
-      <div v-if="activeTab === 'image'" class="image-section">
+      <div class="image-section">
         <div class="carousel">
           <div class="carousel-container" :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
-            <div 
-              v-for="(image, index) in images" 
-              :key="index" 
+            <div
+              v-for="(image, index) in images"
+              :key="index"
               class="carousel-slide"
             >
-              <img 
-                :src="image" 
+              <img
+                :src="image"
                 :alt="`产品图片 ${index + 1}`"
                 @click="openPreview(index)"
               />
             </div>
           </div>
-          
+
           <button class="carousel-btn prev" @click="prevSlide" v-if="images.length > 1">
             <span>‹</span>
           </button>
           <button class="carousel-btn next" @click="nextSlide" v-if="images.length > 1">
             <span>›</span>
           </button>
-          
+
           <div class="carousel-indicators" v-if="images.length > 1">
-            <span 
-              v-for="(_, index) in images" 
+            <span
+              v-for="(_, index) in images"
               :key="index"
               class="indicator"
               :class="{ active: currentIndex === index }"
@@ -55,25 +39,9 @@
             ></span>
           </div>
         </div>
-        
-        <div class="image-count">
-          共 {{ images.length }} 张图片
-        </div>
-      </div>
 
-      <div v-else class="video-section">
-        <div class="video-placeholder">
-          <div class="video-icon">🎬</div>
-          <p class="video-text">视频播放区</p>
-          <p class="video-hint">支持播放、暂停、全屏功能</p>
-          <div class="video-controls">
-            <button class="control-btn" @click="togglePlay">
-              {{ isPlaying ? '⏸️ 暂停' : '▶️ 播放' }}
-            </button>
-            <button class="control-btn" @click="toggleFullscreen">
-              ⛶ 全屏
-            </button>
-          </div>
+        <div class="image-count" v-if="images.length > 0">
+          共 {{ images.length }} 张图片
         </div>
       </div>
     </div>
@@ -82,7 +50,7 @@
       <div class="preview-content" @click.stop>
         <button class="close-btn" @click="closePreview">×</button>
         <img :src="images[previewIndex]" alt="预览图片" />
-        <div class="preview-nav">
+        <div class="preview-nav" v-if="images.length > 1">
           <button @click="prevPreview" v-if="images.length > 1">‹ 上一张</button>
           <span>{{ previewIndex + 1 }} / {{ images.length }}</span>
           <button @click="nextPreview" v-if="images.length > 1">下一张 ›</button>
@@ -99,38 +67,23 @@ const props = defineProps({
   images: {
     type: Array,
     default: () => []
-  },
-  videos: {
-    type: Array,
-    default: () => []
   }
 })
 
-const activeTab = ref('image')
 const currentIndex = ref(0)
 const showPreview = ref(false)
 const previewIndex = ref(0)
-const isPlaying = ref(false)
 let autoPlayTimer = null
 
-const switchTab = (tab) => {
-  activeTab.value = tab
-  if (tab === 'image') {
-    startAutoPlay()
-  } else {
-    stopAutoPlay()
-  }
-}
-
 const prevSlide = () => {
-  currentIndex.value = currentIndex.value === 0 
-    ? props.images.length - 1 
+  currentIndex.value = currentIndex.value === 0
+    ? props.images.length - 1
     : currentIndex.value - 1
 }
 
 const nextSlide = () => {
-  currentIndex.value = currentIndex.value === props.images.length - 1 
-    ? 0 
+  currentIndex.value = currentIndex.value === props.images.length - 1
+    ? 0
     : currentIndex.value + 1
 }
 
@@ -166,23 +119,15 @@ const closePreview = () => {
 }
 
 const prevPreview = () => {
-  previewIndex.value = previewIndex.value === 0 
-    ? props.images.length - 1 
+  previewIndex.value = previewIndex.value === 0
+    ? props.images.length - 1
     : previewIndex.value - 1
 }
 
 const nextPreview = () => {
-  previewIndex.value = previewIndex.value === props.images.length - 1 
-    ? 0 
+  previewIndex.value = previewIndex.value === props.images.length - 1
+    ? 0
     : previewIndex.value + 1
-}
-
-const togglePlay = () => {
-  isPlaying.value = !isPlaying.value
-}
-
-const toggleFullscreen = () => {
-  alert('全屏功能')
 }
 
 onMounted(() => {
@@ -201,41 +146,19 @@ onUnmounted(() => {
   min-height: 400px;
 }
 
-.gallery-header {
-  margin-bottom: 16px;
-}
-
-.tabs {
-  display: flex;
-  gap: 12px;
-}
-
-.tab-btn {
+.gallery-title {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 20px;
-  border: none;
-  background: var(--background-color);
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--secondary-text);
-  transition: all 0.3s ease;
+  gap: 8px;
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--secondary-color);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  font-size: 18px;
 }
 
-.tab-btn:hover {
-  background: var(--secondary-color);
-  color: white;
-}
-
-.tab-btn.active {
-  background: var(--primary-color);
-  color: white;
-}
-
-.tab-btn .icon {
-  font-size: 16px;
+.gallery-title .icon {
+  font-size: 20px;
 }
 
 .gallery-content {
@@ -336,63 +259,6 @@ onUnmounted(() => {
   margin-top: 12px;
   font-size: 12px;
   color: var(--secondary-text);
-}
-
-.video-section {
-  height: 350px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.video-placeholder {
-  text-align: center;
-  padding: 40px;
-  background: linear-gradient(135deg, var(--background-color), #e8f5e9);
-  border-radius: 12px;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.video-icon {
-  font-size: 64px;
-  margin-bottom: 16px;
-}
-
-.video-text {
-  font-size: 18px;
-  color: var(--text-color);
-  margin-bottom: 8px;
-}
-
-.video-hint {
-  font-size: 12px;
-  color: var(--secondary-text);
-  margin-bottom: 20px;
-}
-
-.video-controls {
-  display: flex;
-  gap: 12px;
-}
-
-.control-btn {
-  padding: 10px 24px;
-  border: none;
-  background: var(--primary-color);
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.3s ease;
-}
-
-.control-btn:hover {
-  background: var(--secondary-color);
 }
 
 .image-preview {

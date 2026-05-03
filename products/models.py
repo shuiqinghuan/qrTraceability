@@ -26,7 +26,8 @@ class Media(models.Model):
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='media', verbose_name='关联产品')
     media_type = models.CharField('媒体类型', max_length=20, choices=MEDIA_TYPE_CHOICES)
-    url = models.CharField('媒体URL', max_length=500)
+    url = models.CharField('媒体URL', max_length=500, blank=True, null=True)
+    file = models.FileField('媒体文件', upload_to='products/%Y/%m/%d/', blank=True, null=True)
     title = models.CharField('媒体标题', max_length=100, blank=True, null=True)
     description = models.TextField('媒体描述', blank=True, null=True)
     sort_order = models.IntegerField('排序顺序', default=0)
@@ -40,6 +41,11 @@ class Media(models.Model):
 
     def __str__(self):
         return f'{self.get_media_type_display()} - {self.product.name}'
+
+    def get_media_url(self):
+        if self.file:
+            return self.file.url
+        return self.url
 
 
 class HarvestQuality(models.Model):

@@ -59,7 +59,8 @@ class Product(models.Model):
 | id | INTEGER | 是 | 自增 | 主键ID |
 | product_id | INTEGER | 是 | - | 关联产品ID（外键） |
 | media_type | VARCHAR(20) | 是 | - | 媒体类型（image/video） |
-| url | VARCHAR(500) | 是 | - | 媒体文件URL |
+| url | VARCHAR(500) | 否 | - | 媒体文件URL |
+| file | VARCHAR(100) | 否 | - | 上传的媒体文件 |
 | title | VARCHAR(100) | 否 | - | 媒体标题 |
 | description | TEXT | 否 | - | 媒体描述 |
 | sort_order | INTEGER | 否 | 0 | 排序顺序 |
@@ -80,7 +81,8 @@ class Media(models.Model):
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='media', verbose_name='关联产品')
     media_type = models.CharField('媒体类型', max_length=20, choices=MEDIA_TYPE_CHOICES)
-    url = models.CharField('媒体URL', max_length=500)
+    url = models.CharField('媒体URL', max_length=500, blank=True, null=True)
+    file = models.FileField('媒体文件', upload_to='products/%Y/%m/%d/', blank=True, null=True)
     title = models.CharField('媒体标题', max_length=100, blank=True, null=True)
     description = models.TextField('媒体描述', blank=True, null=True)
     sort_order = models.IntegerField('排序顺序', default=0)
@@ -166,6 +168,7 @@ class HarvestQuality(models.Model):
 │ product_id (FK)     │
 │ media_type          │
 │ url                 │
+│ file                │
 │ title               │
 │ description         │
 │ sort_order          │
@@ -260,3 +263,4 @@ class HarvestQualityAdmin(admin.ModelAdmin):
 | 日期 | 版本 | 更新内容 | 更新人 |
 |------|------|----------|--------|
 | 2024-01-01 | v1.0 | 初始数据库设计 | 系统 |
+| 2026-05-03 | v1.1 | 补充 media 表 file 字段，支持文件上传 | 系统 |

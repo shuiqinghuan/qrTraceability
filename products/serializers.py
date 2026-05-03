@@ -26,10 +26,17 @@ class MediaSerializer(serializers.ModelSerializer):
     productId = serializers.IntegerField(source='product_id', read_only=True)
     mediaType = serializers.CharField(source='media_type')
     sortOrder = serializers.IntegerField(source='sort_order', required=False, default=0)
+    url = serializers.SerializerMethodField()
 
     class Meta:
         model = Media
-        fields = ['id', 'productId', 'mediaType', 'url', 'title', 'description', 'sortOrder', 'created_at']
+        fields = ['id', 'productId', 'mediaType', 'url', 'file', 'title', 'description', 'sortOrder', 'created_at']
+        extra_kwargs = {
+            'file': {'write_only': False, 'required': False}
+        }
+
+    def get_url(self, obj):
+        return obj.get_media_url()
 
 
 class HarvestQualitySerializer(serializers.ModelSerializer):
@@ -60,11 +67,11 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
     def get_images(self, obj):
         media = obj.media.filter(media_type='image')
-        return [m.url for m in media]
+        return [m.get_media_url() for m in media]
 
     def get_videos(self, obj):
         media = obj.media.filter(media_type='video')
-        return [m.url for m in media]
+        return [m.get_media_url() for m in media]
 
     def get_harvest(self, obj):
         try:

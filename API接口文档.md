@@ -3,7 +3,7 @@
 ## 1. 接口概述
 
 ### 1.1 基础信息
-- 基础URL：`http://localhost:8000/api`
+- 基础URL：`http://47.104.189.148/api`
 - 数据格式：JSON
 - 编码：UTF-8
 - 接口风格：RESTful
@@ -113,16 +113,23 @@ GET /api/products/?page=1&pageSize=10
   "code": 200,
   "message": "success",
   "data": {
-    "total": 1,
+    "total": 2,
     "page": 1,
     "pageSize": 10,
     "list": [
       {
+        "id": 3,
+        "name": "甜美4K",
+        "code": "1206",
+        "plantingLocation": "陕西省渭南市蒲城县龙池镇",
+        "plantingDate": "2026-02-14"
+      },
+      {
         "id": 1,
         "name": "枣甜5号",
         "code": "4395",
-        "plantingLocation": "山东省济南市历城区农业示范园",
-        "plantingDate": "2024-03-15"
+        "plantingLocation": "四川省乐山市夹江县甘江镇",
+        "plantingDate": "2026-01-18"
       }
     ]
   }
@@ -269,7 +276,7 @@ GET /api/products/1/media/?type=image
 
 ### 3.2 添加多媒体
 
-**接口描述：** 为产品添加图片或视频。
+**接口描述：** 为产品添加图片或视频，支持通过URL或文件上传两种方式。
 
 **请求地址：** `POST /api/products/{productId}/media/`
 
@@ -279,7 +286,10 @@ GET /api/products/1/media/?type=image
 |--------|------|------|------|
 | productId | Integer | 是 | 产品ID（URL路径参数） |
 
-**请求体：**
+**方式一：通过URL添加**
+
+请求头：`Content-Type: application/json`
+
 ```json
 {
   "mediaType": "image",
@@ -290,16 +300,28 @@ GET /api/products/1/media/?type=image
 }
 ```
 
+**方式二：通过文件上传**
+
+请求头：`Content-Type: multipart/form-data`
+
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| mediaType | String | 是 | 媒体类型：image/video |
+| file | File | 是 | 上传的媒体文件 |
+| title | String | 否 | 媒体标题 |
+| description | String | 否 | 媒体描述 |
+| sortOrder | Integer | 否 | 排序顺序，默认0 |
+
 **响应示例：**
 ```json
 {
   "code": 201,
-  "message": "创建成功",
+  "message": "上传成功",
   "data": {
     "id": 1,
     "productId": 1,
     "mediaType": "image",
-    "url": "https://example.com/image1.jpg",
+    "url": "/media/products/2024/01/01/image.jpg",
     "title": "产品图片1",
     "description": "产品主图",
     "sortOrder": 1,
@@ -512,3 +534,4 @@ CORS_ALLOW_ALL_ORIGINS = True  # 开发环境可使用
 | 日期 | 版本 | 更新内容 | 更新人 |
 |------|------|----------|--------|
 | 2024-01-01 | v1.0 | 初始接口设计 | 系统 |
+| 2026-05-03 | v1.1 | 补充文件上传接口说明，更新示例数据 | 系统 |

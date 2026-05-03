@@ -57,8 +57,8 @@ class Command(BaseCommand):
             defaults={
                 'harvest_start_date': date(2024, 7, 1),
                 'harvest_end_date': date(2024, 7, 15),
-                'sugar_content': Decimal('15.50'),
-                'weight': Decimal('280.50'),
+                'sugar_content': Decimal('10.50'),
+                'weight': Decimal('18.50'),
                 'taste': '肉质细腻，汁多味甜，口感爽脆',
                 'suitable_crowd': '老少皆宜，特别适合血糖稳定人群',
                 'quality_summary': '果实饱满，色泽鲜艳，糖度适中，品质优良',
